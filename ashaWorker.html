@@ -6,18 +6,24 @@
     <title>User Details Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
         :root {
-            --primary: #2196F3;
-            --primary-light: #e3f2fd;
-            --secondary: #0d47a1;
-            --danger: #f44336;
-            --success: #4caf50;
-            --warning: #ff9800;
-            --dark: #0f172a;
-            --light: #ffffff;
-            --glass-bg: rgba(255, 255, 255, 0.7);
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-light: #e0e7ff;
+            --secondary: #0f172a;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
         }
 
         * {
@@ -27,12 +33,14 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            background-image: radial-gradient(circle at top left, #e0e7ff 0%, transparent 40%),
+                              radial-gradient(circle at bottom right, #ccfbf1 0%, transparent 40%);
             background-attachment: fixed;
             min-height: 100vh;
-            padding: 20px;
-            color: #333;
+            padding: 40px 20px;
+            color: var(--text-main);
         }
 
         .container {
@@ -40,42 +48,54 @@
             margin: 0 auto;
         }
 
-        /* Glassmorphism Classes */
+        /* Premium Card Style */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+            background: var(--bg-card);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         /* Header Styles */
         .header {
-            padding: 30px;
+            padding: 30px 40px;
             margin-bottom: 30px;
-            border-left: 6px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 6px;
+            background: linear-gradient(to bottom, #4f46e5, #0ea5e9);
+            border-top-left-radius: 24px;
+            border-bottom-left-radius: 24px;
         }
 
         .back-home-btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            color: var(--secondary);
+            gap: 8px;
+            color: var(--text-muted);
             text-decoration: none;
             font-size: 0.95rem;
             font-weight: 600;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 50px;
-            background: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
+            background: #f1f5f9;
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
         }
 
         .back-home-btn:hover {
-            transform: translateX(-5px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            color: var(--secondary);
+            background: #e2e8f0;
+            transform: translateX(-4px);
         }
 
         .header-content {
@@ -87,54 +107,58 @@
         }
 
         .header-text h1 {
-            font-family: 'Outfit', sans-serif;
-            color: var(--secondary);
             font-size: 2.5rem;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 800;
             letter-spacing: -0.5px;
+            background: linear-gradient(to right, #0f172a, #334155);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .header-text p {
-            color: var(--primary);
+            color: var(--text-muted);
             font-size: 1.1rem;
             font-weight: 500;
         }
         
         .header-actions {
             display: flex;
-            gap: 15px;
+            gap: 16px;
         }
 
         .btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
+            padding: 14px 28px;
+            border-radius: 14px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+            gap: 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
         
         .btn-settings {
-            background: #fff;
-            color: #333;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            background: #ffffff;
+            color: var(--secondary);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
         }
         
         .btn-settings:hover {
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            background: #f8fafc;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         /* Statistics Cards */
@@ -142,63 +166,59 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .stat-card {
-            padding: 24px;
+            padding: 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: transform 0.3s ease;
         }
         
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
         }
 
-        .stat-card.blue { border-left: 5px solid var(--primary); }
-        .stat-card.red { border-left: 5px solid var(--danger); }
-        .stat-card.green { border-left: 5px solid var(--success); }
-        .stat-card.orange { border-left: 5px solid var(--warning); }
-
         .stat-content h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: 800;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            line-height: 1;
         }
 
         .stat-content p {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
         }
 
-        .stat-card.blue .stat-content h3 { color: var(--secondary); }
-        .stat-card.red .stat-content h3 { color: #c62828; }
-        .stat-card.green .stat-content h3 { color: #2e7d32; }
-        .stat-card.orange .stat-content h3 { color: #ef6c00; }
+        .stat-card.blue .stat-content h3 { color: #3b82f6; }
+        .stat-card.red .stat-content h3 { color: #ef4444; }
+        .stat-card.green .stat-content h3 { color: #10b981; }
+        .stat-card.orange .stat-content h3 { color: #f59e0b; }
 
         .stat-icon {
-            width: 70px;
-            height: 70px;
-            border-radius: 20px;
+            width: 72px;
+            height: 72px;
+            border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            font-size: 28px;
         }
 
-        .stat-card.blue .stat-icon { background: #e3f2fd; color: #1976d2; }
-        .stat-card.red .stat-icon { background: #ffebee; color: #d32f2f; }
-        .stat-card.green .stat-icon { background: #e8f5e8; color: #388e3c; }
-        .stat-card.orange .stat-icon { background: #fff3e0; color: #f57c00; }
+        .stat-card.blue .stat-icon { background: #eff6ff; color: #3b82f6; }
+        .stat-card.red .stat-icon { background: #fef2f2; color: #ef4444; }
+        .stat-card.green .stat-icon { background: #ecfdf5; color: #10b981; }
+        .stat-card.orange .stat-icon { background: #fffbeb; color: #f59e0b; }
 
         /* Filters Section */
         .filters {
-            padding: 24px;
+            padding: 24px 40px;
             margin-bottom: 30px;
         }
 
@@ -213,7 +233,7 @@
         .filter-group {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 20px;
             flex-wrap: wrap;
         }
 
@@ -222,46 +242,49 @@
         }
 
         .search-input {
-            padding: 14px 14px 14px 45px;
-            border: 2px solid transparent;
-            border-radius: 12px;
-            width: 320px;
+            padding: 16px 16px 16px 50px;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            width: 360px;
             font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            background: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f8fafc;
             outline: none;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
 
         .search-input:focus {
+            background: #ffffff;
             border-color: var(--primary);
-            box-shadow: 0 4px 20px rgba(33, 150, 243, 0.2);
+            box-shadow: 0 0 0 4px var(--primary-light);
         }
 
         .search-icon {
             position: absolute;
-            left: 15px;
+            left: 18px;
             top: 50%;
             transform: translateY(-50%);
-            color: #9ca3af;
+            color: #94a3b8;
+            font-size: 1.1rem;
         }
 
         .filter-select {
-            padding: 14px 20px;
-            border: 2px solid transparent;
-            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
             font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            background: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f8fafc;
             outline: none;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            min-width: 160px;
         }
 
         .filter-select:focus {
+            background: #ffffff;
             border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-light);
         }
 
         /* Data Table */
@@ -271,104 +294,122 @@
         }
 
         .table-header {
-            background: rgba(255,255,255,0.9);
-            padding: 20px 24px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 24px 40px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .table-header h2 {
-            font-family: 'Outfit', sans-serif;
             color: var(--secondary);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .table-wrapper {
             overflow-x: auto;
-            background: rgba(255,255,255,0.6);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            text-align: left;
         }
 
         thead {
-            background: rgba(255,255,255,0.9);
+            background: #f8fafc;
+            border-bottom: 2px solid var(--border-color);
         }
 
         th {
-            padding: 18px 24px;
-            text-align: left;
+            padding: 20px 40px;
             font-size: 0.85rem;
             font-weight: 700;
-            color: var(--secondary);
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         tbody tr {
             transition: background-color 0.2s;
-            border-bottom: 1px solid rgba(0,0,0,0.03);
+            border-bottom: 1px solid var(--border-color);
         }
 
         tbody tr:hover {
-            background: rgba(255,255,255,0.9);
+            background: #f8fafc;
         }
 
         td {
-            padding: 18px 24px;
+            padding: 24px 40px;
             font-size: 0.95rem;
             font-weight: 500;
+            color: var(--text-main);
         }
 
         .child-name {
             font-weight: 700;
             color: var(--secondary);
-            font-size: 1.05rem;
+            font-size: 1.1rem;
         }
+
+        .contact { color: var(--text-muted); }
+        .contact i { color: #94a3b8; margin-right: 6px; }
+        .dob i { color: #94a3b8; margin-right: 6px; }
 
         .badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
             padding: 6px 14px;
-            border-radius: 20px;
+            border-radius: 8px;
             font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
         }
 
-        .badge.yes { background: #ffebee; color: #c62828; }
-        .badge.no { background: #e8f5e8; color: #2e7d32; }
+        .badge.yes { background: var(--danger-light); color: #b91c1c; }
+        .badge.no { background: var(--success-light); color: #047857; }
 
         .status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 18px;
-            border-radius: 20px;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 50px;
             font-size: 0.9rem;
             font-weight: 700;
-            text-transform: uppercase;
         }
 
-        .status-badge.sam { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
-        .status-badge.normal { background: #e8f5e8; color: #2e7d32; border: 1px solid #c8e6c9; }
+        .status-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-badge.sam { 
+            background: var(--danger-light); 
+            color: #b91c1c; 
+        }
+        .status-badge.sam::before { background: #ef4444; }
+
+        .status-badge.normal { 
+            background: var(--success-light); 
+            color: #047857; 
+        }
+        .status-badge.normal::before { background: #10b981; }
 
         .no-data {
             text-align: center;
             padding: 80px 20px;
-            color: var(--secondary);
+            color: var(--text-muted);
         }
 
         .no-data i {
-            font-size: 4rem;
-            color: var(--primary-light);
-            margin-bottom: 20px;
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 16px;
         }
 
         /* Modal Styles */
@@ -378,8 +419,8 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(5px);
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -395,78 +436,96 @@
         }
 
         .modal-content {
-            background: white;
+            background: var(--bg-card);
             width: 100%;
-            max-width: 500px;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
+            max-width: 550px;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .modal-overlay.active .modal-content {
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .modal-header h3 {
-            font-family: 'Outfit', sans-serif;
             font-size: 1.5rem;
+            font-weight: 800;
             color: var(--secondary);
         }
 
         .close-btn {
-            background: none;
+            background: #f1f5f9;
             border: none;
-            font-size: 1.5rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
             cursor: pointer;
-            color: #999;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .close-btn:hover {
+            background: #e2e8f0;
+            color: var(--secondary);
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #555;
-            font-size: 0.9rem;
+            color: var(--secondary);
+            font-size: 0.95rem;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             font-size: 1rem;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             outline: none;
+            transition: all 0.2s;
+            background: #f8fafc;
         }
 
         .form-group input:focus {
+            background: #ffffff;
             border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-light);
         }
         
         .modal-footer {
             display: flex;
             justify-content: flex-end;
-            gap: 15px;
-            margin-top: 30px;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
         }
 
         /* Footer */
         .footer {
             text-align: center;
-            color: var(--secondary);
+            color: var(--text-muted);
             font-size: 0.95rem;
             font-weight: 500;
             padding: 20px 0;
@@ -476,6 +535,9 @@
         @media (max-width: 768px) {
             .header-text h1 { font-size: 2rem; }
             .search-input { width: 100%; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .filter-group { width: 100%; }
+            .filter-select { flex: 1; }
         }
     </style>
 </head>
@@ -545,7 +607,7 @@
                     </div>
                     
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-filter" style="color: #1976d2;"></i>
+                        <i class="fas fa-filter" style="color: #64748b;"></i>
                         <select class="filter-select" id="status-filter" onchange="filterData()">
                             <option value="All">All Status</option>
                             <option value="Normal">Normal</option>
@@ -554,7 +616,7 @@
                     </div>
                 </div>
 
-                <button class="btn export-button" onclick="exportData()">
+                <button class="btn btn-settings" onclick="exportData()">
                     <i class="fas fa-download"></i> Export CSV
                 </button>
             </div>
@@ -564,7 +626,7 @@
         <div class="data-table-container glass-panel">
             <div class="table-header">
                 <h2>
-                    <i class="fas fa-table"></i>
+                    <i class="fas fa-table" style="color: var(--primary);"></i>
                     User Details (<span id="record-count">0</span> records)
                 </h2>
             </div>
@@ -585,7 +647,6 @@
                     <tbody id="data-table-body">
                         <tr>
                             <td colspan="7" class="loading">
-                                <div class="spinner"></div>
                                 Loading data...
                             </td>
                         </tr>
@@ -604,10 +665,10 @@
     <div class="modal-overlay" id="apiModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Google Sheets Configuration</h3>
+                <h3>Google Sheets Config</h3>
                 <button class="close-btn" onclick="closeApiModal()">&times;</button>
             </div>
-            <p style="margin-bottom: 20px; font-size: 0.9rem; color: #666; line-height: 1.5;">
+            <p style="margin-bottom: 24px; font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">
                 Connect this dashboard to your n8n-powered Google Sheet by entering the public Sheet ID and your Google API Key.
             </p>
             <div class="form-group">
@@ -641,7 +702,6 @@
             { id: 4, childName: "Ananya Gupta", dob: "2020-09-05", muac: 10.8, odema: "Yes", status: "SAM", contact: "+91 65432 10987" }
         ];
 
-        // Format date to DD/MM/YYYY
         function formatDate(dateString) {
             if(!dateString) return '';
             try {
@@ -651,7 +711,6 @@
             } catch(e) { return dateString; }
         }
 
-        // Calculate age
         function calculateAge(dob) {
             if(!dob) return 0;
             const today = new Date();
@@ -687,9 +746,7 @@
                     <td class="muac ${user.muac < 11.5 ? 'low' : 'normal'}">${user.muac}</td>
                     <td><span class="badge ${user.odema.toLowerCase()}">${user.odema}</span></td>
                     <td>
-                        <span class="status-badge ${user.status.toLowerCase()}">
-                            <i class="fas ${user.status === 'SAM' ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${user.status}
-                        </span>
+                        <span class="status-badge ${user.status.toLowerCase()}">${user.status}</span>
                     </td>
                 </tr>
             `).join('');
@@ -707,9 +764,6 @@
             renderTable(filteredData);
         }
 
-        // --- Google Sheets API Logic ---
-        
-        // Modal functions
         function openApiModal() {
             document.getElementById('sheetIdInput').value = localStorage.getItem('hm_sheet_id') || '';
             document.getElementById('apiKeyInput').value = localStorage.getItem('hm_api_key') || '';
@@ -733,7 +787,6 @@
             const range = localStorage.getItem('hm_range') || 'Patients!A2:G';
 
             if (!sheetId || !apiKey) {
-                // Use dummy data if not configured
                 setTimeout(() => {
                     userData = dummyData;
                     filteredData = userData;
@@ -744,15 +797,13 @@
             }
 
             try {
-                const url = \`https://sheets.googleapis.com/v4/spreadsheets/\${sheetId}/values/\${range}?key=\${apiKey}\`;
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('API Error');
                 const result = await response.json();
                 
                 if (result.values && result.values.length > 0) {
                     userData = result.values.map((row, idx) => {
-                        // Expected structure: [ChildName, Contact, DOB, Age, MUAC, Odema, Status]
-                        // We map based on standard array index logic
                         return {
                             id: idx + 1,
                             childName: row[0] || 'Unknown',
@@ -772,20 +823,20 @@
                 renderTable(filteredData);
             } catch (err) {
                 console.error(err);
-                document.getElementById('data-table-body').innerHTML = \`
-                    <tr><td colspan="7" class="no-data"><i class="fas fa-exclamation-triangle" style="color: #f44336;"></i><p>Error connecting to Google Sheets. Check API Key/Sheet ID.</p></td></tr>
-                \`;
+                document.getElementById('data-table-body').innerHTML = `
+                    <tr><td colspan="7" class="no-data"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i><p>Error connecting to Google Sheets. Check API Key/Sheet ID.</p></td></tr>
+                `;
             }
         }
 
         function refreshData() {
-            document.getElementById('data-table-body').innerHTML = \`<tr><td colspan="7" style="text-align:center; padding: 40px; color:#1976d2;">Loading live data...</td></tr>\`;
+            document.getElementById('data-table-body').innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 40px; color:var(--primary); font-weight: 500;">Loading live data...</td></tr>`;
             fetchUserData();
         }
 
         function exportData() {
-            const csvContent = "data:text/csv;charset=utf-8," + "Child Name,Contact,Date of Birth,Age,MUAC (cm),Odema,Status\\n" +
-                filteredData.map(u => \`\${u.childName},\${u.contact},\${formatDate(u.dob)},\${calculateAge(u.dob)},\${u.muac},\${u.odema},\${u.status}\`).join("\\n");
+            const csvContent = "data:text/csv;charset=utf-8," + "Child Name,Contact,Date of Birth,Age,MUAC (cm),Odema,Status\n" +
+                filteredData.map(u => `${u.childName},${u.contact},${formatDate(u.dob)},${calculateAge(u.dob)},${u.muac},${u.odema},${u.status}`).join("\n");
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);

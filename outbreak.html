@@ -695,7 +695,7 @@
             }
 
             try {
-                const url = \`https://sheets.googleapis.com/v4/spreadsheets/\${sheetId}/values/\${range}?key=\${apiKey}\`;
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('API Error');
                 const result = await response.json();
@@ -767,7 +767,7 @@
             // Update status indicator
             const indicator = document.getElementById('statusIndicator');
             const alertLevel = getAlertLevel(alerts);
-            indicator.className = \`status-indicator \${alertLevel}\`;
+            indicator.className = `status-indicator ${alertLevel}`;
 
             // Display alerts
             displayAlertsList(alerts);
@@ -806,38 +806,37 @@
                 \`;
                 return;
             }
-
             container.innerHTML = alerts.map(alert => {
                 const severity = getSeverity(alert.count);
                 
-                return \`
-                    <div class="alert-card \${severity.toLowerCase()}">
+                return `
+                    <div class="alert-card ${severity.toLowerCase()}">
                         <div class="alert-header">
                             <h3 class="disease-name">
-                                <i class="fas fa-virus"></i> \${alert.disease}
+                                <i class="fas fa-virus"></i> ${alert.disease}
                             </h3>
-                            <span class="severity-badge \${severity.toLowerCase()}">\${severity}</span>
+                            <span class="severity-badge ${severity.toLowerCase()}">${severity}</span>
                         </div>
                         <div class="alert-details">
                             <div class="detail-item">
-                                <div class="detail-value">\${alert.count}</div>
+                                <div class="detail-value">${alert.count}</div>
                                 <div class="detail-label">Cases</div>
                             </div>
                             <div class="detail-item">
-                                <div class="detail-value" style="font-size:1rem;">\${alert.location}</div>
+                                <div class="detail-value" style="font-size:1rem;">${alert.location}</div>
                                 <div class="detail-label">Location</div>
                             </div>
                             <div class="detail-item">
-                                <div class="detail-value" style="font-size:1rem;">\${alert.date || 'N/A'}</div>
+                                <div class="detail-value" style="font-size:1rem;">${alert.date || 'N/A'}</div>
                                 <div class="detail-label">Date</div>
                             </div>
                             <div class="detail-item">
-                                <div class="detail-value" style="font-size:1rem;">\${alert.notes || '-'}</div>
+                                <div class="detail-value" style="font-size:1rem;">${alert.notes || '-'}</div>
                                 <div class="detail-label">Notes</div>
                             </div>
                         </div>
                     </div>
-                \`;
+                `;
             }).join('');
         }
 
