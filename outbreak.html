@@ -621,11 +621,9 @@
 
     <script>
         // =========================================================================
-        // 🔴🔴🔴 GOOGLE SHEETS API CONFIGURATION - FILL IN YOUR DETAILS 🔴🔴🔴
+        // Google Sheets API Configuration (Keys are securely hidden in Vercel)
         // =========================================================================
-        const GOOGLE_SHEET_ID = 'YOUR_SPREADSHEET_ID_HERE'; // e.g. 1BxiMVs0...
-        const GOOGLE_API_KEY = 'YOUR_API_KEY_HERE';         // e.g. AIzaSy...
-        const SHEET_RANGE = 'Outbreak_Alerts!A2:E';         // Adjust based on your tab name
+        const SHEET_RANGE = 'Outbreak_Alerts!A2:E'; // Adjust based on your tab name
         // =========================================================================
 
         let currentChart = null;
@@ -640,16 +638,9 @@
         ];
 
         async function fetchUserData() {
-            if (GOOGLE_SHEET_ID === 'YOUR_SPREADSHEET_ID_HERE' || GOOGLE_API_KEY === 'YOUR_API_KEY_HERE') {
-                setTimeout(() => {
-                    allAlerts = [...dummyData];
-                    displayResults(allAlerts, "Global");
-                }, 800);
-                return;
-            }
-
             try {
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_ID}/values/${SHEET_RANGE}?key=${GOOGLE_API_KEY}`;
+                // Fetch from our secure Vercel API Route instead of exposing keys to the browser
+                const url = `/api/getGoogleSheet?range=${encodeURIComponent(SHEET_RANGE)}`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('API Error');
                 const result = await response.json();
