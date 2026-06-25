@@ -646,6 +646,8 @@
                 if (!response.ok) throw new Error('API Error');
                 const result = await response.json();
                 
+                if (result.error) throw new Error(result.error);
+
                 if (result.values && result.values.length > 0) {
                     allAlerts = result.values.map(row => ({
                         location: row[0] || 'Unknown',
@@ -659,8 +661,9 @@
                 }
                 displayResults(allAlerts, "Global");
             } catch (err) {
-                console.error(err);
-                document.getElementById('loading').innerHTML = '<p style="color:red;">Error connecting to Google Sheets.</p>';
+                console.warn('Live data unavailable, loading demo data:', err.message);
+                allAlerts = [...dummyData];
+                displayResults(allAlerts, "Global");
             }
         }
 
