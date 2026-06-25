@@ -661,6 +661,7 @@
     <script>
         // =========================================================================
         // Google Sheets API Configuration (Keys are securely hidden in Vercel)
+        // Make sure to set ASHA_SHEET_ID and GOOGLE_API_KEY in your .env/Vercel
         // =========================================================================
         const SHEET_RANGE = 'Patients!A2:G'; // Adjust based on your tab name
         // =========================================================================
@@ -741,7 +742,7 @@
         async function fetchUserData() {
             try {
                 // Fetch from our secure Vercel API Route instead of exposing keys to the browser
-                const url = `/api/getGoogleSheet?range=${encodeURIComponent(SHEET_RANGE)}`;
+                const url = `/api/getGoogleSheet?type=asha&range=${encodeURIComponent(SHEET_RANGE)}`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('API Error');
                 const result = await response.json();

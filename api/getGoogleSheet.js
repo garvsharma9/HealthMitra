@@ -1,13 +1,18 @@
 export default async function handler(req, res) {
-    const { range } = req.query;
+    const { range, type } = req.query;
     
-    // These environment variables will be securely pulled from Vercel / your local .env
-    const SHEET_ID = process.env.GOOGLE_SHEET_ID;
+    // Pull the shared API Key
     const API_KEY = process.env.GOOGLE_API_KEY;
+    
+    // Determine the correct Sheet ID based on the page requesting it
+    let SHEET_ID;
+    if (type === 'asha') SHEET_ID = process.env.ASHA_SHEET_ID;
+    else if (type === 'vacci') SHEET_ID = process.env.VACCI_SHEET_ID;
+    else if (type === 'outbreak') SHEET_ID = process.env.OUTBREAK_SHEET_ID;
 
     if (!SHEET_ID || !API_KEY) {
         return res.status(500).json({ 
-            error: 'Missing Environment Variables. Please set GOOGLE_SHEET_ID and GOOGLE_API_KEY in Vercel.' 
+            error: `Missing Environment Variables. Please set GOOGLE_API_KEY and the corresponding SHEET_ID for ${type} in Vercel.` 
         });
     }
 
