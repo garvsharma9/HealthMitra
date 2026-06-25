@@ -1,0 +1,297 @@
+        <div class="footer">
+            <p>&copy; 2025 HealthMitra | Connected via n8n to Google Sheets</p>
+        </div>
+    </div>
+
+    <!-- API Settings Modal -->
+    <div class="modal-overlay" id="apiModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Google Sheets Configuration</h3>
+                <button class="close-btn" onclick="closeApiModal()">&times;</button>
+            </div>
+            <p style="margin-bottom: 20px; font-size: 0.9rem; color: #666; line-height: 1.5;">
+                Connect this dashboard to your n8n-powered Google Sheet by entering the public Sheet ID and your Google API Key.
+            </p>
+            <div class="form-group">
+                <label>Spreadsheet ID</label>
+                <input type="text" id="sheetIdInput" placeholder="e.g. 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms">
+            </div>
+            <div class="form-group">
+                <label>Google API Key</label>
+                <input type="text" id="apiKeyInput" placeholder="AIzaSy...">
+            </div>
+            <div class="form-group">
+                <label>Sheet Name / Range</label>
+                <input type="text" id="rangeInput" value="Vaccination_Records!A2:I" placeholder="e.g. Vaccination_Records!A2:I">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-settings" onclick="closeApiModal()">Cancel</button>
+                <button class="btn" onclick="saveApiSettings()">Save & Sync</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Default dummy data
+        const dummyAppointments = [
+            { name: "Arjun", patientId: "PD001234", age: "2 months", vaccine: "BCG", date: "2025-09-22", time: "09:30", status: "confirmed", contact: "+91-98765-43210", notes: "Birth dose" },
+            { name: "Aadhya", patientId: "PD001235", age: "6 weeks", vaccine: "OPV", date: "2025-09-22", time: "10:15", status: "pending", contact: "+91-98765-43211", notes: "First dose" },
+            { name: "Vihaan", patientId: "PD001236", age: "3 months", vaccine: "DPT", date: "2025-09-22", time: "11:00", status: "confirmed", contact: "+91-98765-43212", notes: "Second dose" },
+            { name: "Ananya", patientId: "PD001237", age: "4 months", vaccine: "Hib", date: "2025-09-23", time: "08:45", status: "confirmed", contact: "+91-98765-43213", notes: "Premature baby" },
+            { name: "Karthik", patientId: "PD001238", age: "2 months", vaccine: "Hepatitis B", date: "2025-09-23", time: "09:30", status: "pending", contact: "+91-98765-43214", notes: "Catch up" },
+            { name: "Ishaan", patientId: "PD001239", age: "6 months", vaccine: "Pneumococcal", date: "2025-09-23", time: "14:20", status: "completed", contact: "+91-98765-43215", notes: "Second dose" }
+        ];
+
+        let appointments = [];
+        let originalAppointments = [];
+        let currentSort = { field: 'datetime', direction: 'asc' };
+
+        // Modal Functions
+        function openApiModal() {
+            document.getElementById('sheetIdInput').value = localStorage.getItem('hm_vac_sheet_id') || '';
+            document.getElementById('apiKeyInput').value = localStorage.getItem('hm_vac_api_key') || '';
+            document.getElementById('rangeInput').value = localStorage.getItem('hm_vac_range') || 'Vaccination_Records!A2:I';
+            document.getElementById('apiModal').classList.add('active');
+        }
+        function closeApiModal() {
+            document.getElementById('apiModal').classList.remove('active');
+        }
+        function saveApiSettings() {
+            localStorage.setItem('hm_vac_sheet_id', document.getElementById('sheetIdInput').value.trim());
+            localStorage.setItem('hm_vac_api_key', document.getElementById('apiKeyInput').value.trim());
+            localStorage.setItem('hm_vac_range', document.getElementById('rangeInput').value.trim());
+            closeApiModal();
+            refreshData();
+        }
+
+        async function fetchUserData() {
+            const sheetId = localStorage.getItem('hm_vac_sheet_id');
+            const apiKey = localStorage.getItem('hm_vac_api_key');
+            const range = localStorage.getItem('hm_vac_range') || 'Vaccination_Records!A2:I';
+
+            if (!sheetId || !apiKey) {
+                setTimeout(() => {
+                    originalAppointments = [...dummyAppointments];
+                    appointments = [...originalAppointments];
+                    sortTable('datetime');
+                }, 800);
+                return;
+            }
+
+            try {
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('API Error');
+                const result = await response.json();
+                
+                if (result.values && result.values.length > 0) {
+                    originalAppointments = result.values.map(row => ({
+                        name: row[0] || 'Unknown',
+                        patientId: row[1] || 'N/A',
+                        age: row[2] || '',
+                        vaccine: row[3] || '',
+                        date: row[4] || '',
+                        time: row[5] || '',
+                        status: row[6] || 'pending',
+                        contact: row[7] || '',
+                        notes: row[8] || ''
+                    }));
+                } else {
+                    originalAppointments = [];
+                }
+                appointments = [...originalAppointments];
+                sortTable('datetime');
+            } catch (err) {
+                console.error(err);
+                document.getElementById('appointmentsBody').innerHTML = `
+                    <tr><td colspan="8" class="no-data"><i class="fas fa-exclamation-triangle" style="color: #f44336;"></i><p>Error connecting to Google Sheets.</p></td></tr>
+                `;
+            }
+        }
+
+        function refreshData() {
+            document.getElementById('appointmentsBody').innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 40px; color:var(--primary);">Loading live data...</td></tr>`;
+            fetchUserData();
+        }
+
+        function formatDate(dateStr) {
+            if(!dateStr) return '';
+            try {
+                const date = new Date(dateStr);
+                if(isNaN(date)) return dateStr;
+                return date.toLocaleDateString('en-IN', {
+                    weekday: 'short',
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+            } catch(e) { return dateStr; }
+        }
+
+        function formatTime(timeStr) {
+            if(!timeStr) return '';
+            try {
+                const parts = timeStr.split(':');
+                if(parts.length < 2) return timeStr;
+                const date = new Date();
+                date.setHours(parts[0], parts[1]);
+                return date.toLocaleTimeString('en-IN', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            } catch(e) { return timeStr; }
+        }
+
+        function getVaccineClass(vaccine) {
+            if(!vaccine) return '';
+            return vaccine.toLowerCase().replace(/[^a-z]/g, '-');
+        }
+
+        function renderAppointments() {
+            const tbody = document.getElementById('appointmentsBody');
+            tbody.innerHTML = '';
+            
+            if (appointments.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="no-data"><i class="fas fa-folder-open"></i><p>No records found</p></td></tr>`;
+                updateStats();
+                return;
+            }
+
+            appointments.forEach(appointment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="patient-name">${appointment.name}</div>
+                        <div class="patient-id">ID: ${appointment.patientId}</div>
+                    </td>
+                    <td>${appointment.age}</td>
+                    <td><span class="vaccine-badge ${getVaccineClass(appointment.vaccine)}">${appointment.vaccine}</span></td>
+                    <td class="date-cell"><i class="far fa-calendar-alt"></i> ${formatDate(appointment.date)}</td>
+                    <td class="time-cell"><i class="far fa-clock"></i> ${formatTime(appointment.time)}</td>
+                    <td>
+                        <span class="status-badge ${appointment.status.toLowerCase()}">
+                            ${appointment.status.toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="contact-info"><i class="fas fa-phone-alt"></i> ${appointment.contact}</td>
+                    <td style="font-size: 0.85rem; color: #64748b;">${appointment.notes}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            updateStats();
+        }
+
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('totalAppointments').textContent = appointments.length;
+            document.getElementById('todayAppointments').textContent = appointments.filter(apt => apt.date === today).length;
+            document.getElementById('confirmedCount').textContent = appointments.filter(apt => apt.status.toLowerCase() === 'confirmed').length;
+            document.getElementById('pendingCount').textContent = appointments.filter(apt => apt.status.toLowerCase() === 'pending').length;
+            document.getElementById('completedCount').textContent = appointments.filter(apt => apt.status.toLowerCase() === 'completed').length;
+        }
+
+        function sortTable(field) {
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            if (event && event.target && event.target.classList.contains('sort-btn')) {
+                event.target.classList.add('active');
+            }
+
+            if (currentSort.field === field) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.field = field;
+                currentSort.direction = 'asc';
+            }
+
+            appointments.sort((a, b) => {
+                let valueA, valueB;
+                switch(field) {
+                    case 'datetime':
+                        valueA = new Date(a.date + 'T' + (a.time||'00:00'));
+                        valueB = new Date(b.date + 'T' + (b.time||'00:00'));
+                        break;
+                    case 'date':
+                        valueA = new Date(a.date);
+                        valueB = new Date(b.date);
+                        break;
+                    case 'time':
+                        valueA = new Date('2025-01-01T' + (a.time||'00:00'));
+                        valueB = new Date('2025-01-01T' + (b.time||'00:00'));
+                        break;
+                    case 'name':
+                        valueA = (a.name||'').toLowerCase();
+                        valueB = (b.name||'').toLowerCase();
+                        break;
+                    case 'age':
+                        const getMonths = (ageStr) => {
+                            if(!ageStr) return 0;
+                            const match = ageStr.match(/(\d+)\s*(month|week)/i);
+                            if (match) {
+                                const num = parseInt(match[1]);
+                                return match[2].toLowerCase().startsWith('week') ? num / 4.33 : num;
+                            }
+                            return 0;
+                        };
+                        valueA = getMonths(a.age);
+                        valueB = getMonths(b.age);
+                        break;
+                    case 'vaccine':
+                        valueA = (a.vaccine||'').toLowerCase();
+                        valueB = (b.vaccine||'').toLowerCase();
+                        break;
+                    case 'status':
+                        const statusOrder = { 'confirmed': 1, 'pending': 2, 'completed': 3, 'cancelled': 4 };
+                        valueA = statusOrder[(a.status||'').toLowerCase()] || 5;
+                        valueB = statusOrder[(b.status||'').toLowerCase()] || 5;
+                        break;
+                    case 'contact':
+                        valueA = (a.contact||'').toLowerCase();
+                        valueB = (b.contact||'').toLowerCase();
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (valueA < valueB) return currentSort.direction === 'asc' ? -1 : 1;
+                if (valueA > valueB) return currentSort.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            renderAppointments();
+        }
+
+        function resetTable() {
+            appointments = [...originalAppointments];
+            currentSort = { field: 'datetime', direction: 'asc' };
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.sort-btn:first-child').classList.add('active');
+            sortTable('datetime');
+        }
+
+        function searchAppointments() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (!searchTerm) {
+                appointments = [...originalAppointments];
+            } else {
+                appointments = originalAppointments.filter(app =>
+                    (app.name||'').toLowerCase().includes(searchTerm) ||
+                    (app.patientId||'').toLowerCase().includes(searchTerm) ||
+                    (app.vaccine||'').toLowerCase().includes(searchTerm) ||
+                    (app.status||'').toLowerCase().includes(searchTerm) ||
+                    (app.contact||'').includes(searchTerm) ||
+                    (app.notes||'').toLowerCase().includes(searchTerm)
+                );
+            }
+            renderAppointments();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', searchAppointments);
+
+        document.addEventListener('DOMContentLoaded', fetchUserData);
+    </script>
+</body>
+</html>

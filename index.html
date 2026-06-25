@@ -4,7 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HealthMitra - Digital Health Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,10 +24,34 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: var(--light);
             min-height: 100vh;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Mesh */
+        .bg-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.5) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0.5) 0, transparent 50%);
+            filter: blur(80px);
+            opacity: 0.8;
+            animation: meshFlow 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes meshFlow {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
         }
 
         .container {
@@ -29,39 +65,47 @@
         /* Header Section */
         .header {
             text-align: center;
-            padding: 60px 0 80px;
-            color: white;
+            padding: 80px 0 60px;
         }
 
         .logo {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            font-family: 'Outfit', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(167, 139, 250, 0.2);
+            letter-spacing: -1px;
         }
 
         .tagline {
             font-size: 1.2rem;
-            opacity: 0.9;
+            opacity: 0.8;
             font-weight: 300;
-            letter-spacing: 0.5px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
         /* Portal Cards Grid */
         .portals-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 30px;
-            padding: 0 0 80px;
+            padding: 0 0 60px;
         }
 
         .portal-card {
-            background: white;
-            border-radius: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
             padding: 40px 30px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             position: relative;
             overflow: hidden;
@@ -73,59 +117,70 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-light));
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
         }
 
-        .portal-card:hover::before {
-            transform: scaleX(1);
+        .portal-card > * {
+            position: relative;
+            z-index: 1;
         }
 
         .portal-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            transform: translateY(-12px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 40px rgba(var(--glow-color), 0.2);
+            border-color: rgba(var(--glow-color), 0.5);
+        }
+
+        .portal-card:hover::before {
+            opacity: 1;
         }
 
         .portal-card.vaccine {
-            --accent-color: #4CAF50;
-            --accent-light: #81C784;
+            --glow-color: 52, 211, 153; /* emerald-400 */
         }
 
         .portal-card.asha {
-            --accent-color: #2196F3;
-            --accent-light: #64B5F6;
+            --glow-color: 96, 165, 250; /* blue-400 */
         }
 
         .portal-card.outbreak {
-            --accent-color: #FF5722;
-            --accent-light: #FF8A65;
+            --glow-color: 248, 113, 113; /* red-400 */
         }
 
         .card-icon {
             width: 80px;
             height: 80px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
+            margin: 0 auto 25px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
-            color: white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: rgba(var(--glow-color), 0.15);
+            color: rgb(var(--glow-color));
+            box-shadow: 0 0 30px rgba(var(--glow-color), 0.2);
+            border: 1px solid rgba(var(--glow-color), 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .portal-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #2c3e50;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
             margin-bottom: 15px;
         }
 
         .card-description {
-            color: #64748b;
+            color: #cbd5e1;
             line-height: 1.6;
             margin-bottom: 25px;
             font-size: 0.95rem;
@@ -134,147 +189,176 @@
         .card-features {
             list-style: none;
             margin-bottom: 30px;
+            text-align: left;
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 16px;
         }
 
         .card-features li {
             padding: 8px 0;
-            color: #475569;
+            color: #e2e8f0;
             font-size: 0.9rem;
-            position: relative;
-            padding-left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .card-features li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: var(--accent-color);
-            font-weight: bold;
+        .card-features li i {
+            color: rgb(var(--glow-color));
+            font-size: 1.1rem;
         }
 
         .access-button {
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
-            color: white;
+            background: rgb(var(--glow-color));
+            color: #0f172a;
             border: none;
-            padding: 12px 30px;
+            padding: 14px 35px;
             border-radius: 50px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             font-size: 0.9rem;
+            width: 100%;
         }
 
         .access-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 0 20px rgba(var(--glow-color), 0.6);
+            transform: scale(1.05);
+        }
+        
+        /* Telegram CTA Section */
+        .telegram-cta {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(147, 51, 234, 0.2));
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 50px;
+            text-align: center;
+            margin-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .telegram-cta h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .telegram-cta p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        
+        .tg-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #2AABEE;
+            color: white;
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(42, 171, 238, 0.3);
+        }
+        
+        .tg-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(42, 171, 238, 0.5);
         }
 
-        /* Background Elements */
-        .bg-element {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            z-index: 1;
-        }
-
-        .bg-element-1 {
-            width: 300px;
-            height: 300px;
-            top: 10%;
-            right: -150px;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .bg-element-2 {
-            width: 200px;
-            height: 200px;
-            bottom: 20%;
-            left: -100px;
-            animation: float 8s ease-in-out infinite reverse;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #64748b;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .logo {
-                font-size: 2.5rem;
-            }
-            
-            .portals-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-                padding-bottom: 40px;
-            }
-            
-            .portal-card {
-                padding: 30px 20px;
-            }
-            
-            .container {
-                padding: 0 15px;
-            }
+            .logo { font-size: 3rem; }
+            .telegram-cta { padding: 30px 20px; }
+            .telegram-cta h2 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
-    <div class="bg-element bg-element-1"></div>
-    <div class="bg-element bg-element-2"></div>
+    <div class="bg-mesh"></div>
     
     <div class="container">
         <div class="header">
             <h1 class="logo">HealthMitra</h1>
-            <p class="tagline">Empowering India's Digital Health Ecosystem</p>
+            <p class="tagline">Empowering India's Digital Health Ecosystem with AI-driven diagnostics and real-time monitoring.</p>
         </div>
 
         <div class="portals-grid">
             <!-- Vaccine Scheduler Portal -->
             <div class="portal-card vaccine" onclick="window.location.href='vacciSchedule.html'">
-                <div class="card-icon">💉</div>
+                <div class="card-icon"><i class="fas fa-syringe"></i></div>
                 <h2 class="card-title">Vaccine Scheduler</h2>
-                <p class="card-description">Smart vaccination management system integrated with RCH database for automated scheduling and tracking</p>
+                <p class="card-description">Smart vaccination management system integrated with RCH database for automated scheduling and tracking.</p>
                 <ul class="card-features">
-                    <li>Automated appointment scheduling</li>
-                    <li>SMS & WhatsApp reminders</li>
-                    <li>Real-time availability tracking</li>
-                    <li>Digital vaccination certificates</li>
+                    <li><i class="fas fa-check-circle"></i> Automated appointment scheduling</li>
+                    <li><i class="fas fa-check-circle"></i> SMS & WhatsApp reminders</li>
+                    <li><i class="fas fa-check-circle"></i> Real-time availability tracking</li>
+                    <li><i class="fas fa-check-circle"></i> Digital vaccination certificates</li>
                 </ul>
                 <button class="access-button">Access Portal</button>
             </div>
 
             <!-- ASHA Worker Portal -->
             <div class="portal-card asha" onclick="window.location.href='ashaWorker.html'">
-                <div class="card-icon">👩‍⚕️</div>
+                <div class="card-icon"><i class="fas fa-user-nurse"></i></div>
                 <h2 class="card-title">ASHA Worker Portal</h2>
-                <p class="card-description">Comprehensive toolkit for ASHA workers with AI-powered health assessments and community health management</p>
+                <p class="card-description">Comprehensive toolkit for ASHA workers with AI-powered health assessments and community health management.</p>
                 <ul class="card-features">
-                    <li>Patient health records</li>
-                    <li>AI diagnostic assistance</li>
-                    <li>Community health tracking</li>
-                    <li>Training modules & resources</li>
+                    <li><i class="fas fa-check-circle"></i> Patient health records</li>
+                    <li><i class="fas fa-check-circle"></i> AI diagnostic assistance</li>
+                    <li><i class="fas fa-check-circle"></i> Community health tracking</li>
+                    <li><i class="fas fa-check-circle"></i> Training modules & resources</li>
                 </ul>
                 <button class="access-button">Access Portal</button>
             </div>
 
             <!-- Outbreak Portal -->
             <div class="portal-card outbreak" onclick="window.location.href='outbreak.html'">
-                <div class="card-icon">🚨</div>
+                <div class="card-icon"><i class="fas fa-virus"></i></div>
                 <h2 class="card-title">Outbreak Monitoring</h2>
-                <p class="card-description">Real-time disease surveillance system with AI-powered outbreak detection and early warning alerts</p>
+                <p class="card-description">Real-time disease surveillance system with AI-powered outbreak detection and early warning alerts.</p>
                 <ul class="card-features">
-                    <li>Community symptom reporting</li>
-                    <li>AI outbreak prediction</li>
-                    <li>Real-time disease heatmaps</li>
-                    <li>Automated authority alerts</li>
+                    <li><i class="fas fa-check-circle"></i> Community symptom reporting</li>
+                    <li><i class="fas fa-check-circle"></i> AI outbreak prediction</li>
+                    <li><i class="fas fa-check-circle"></i> Real-time disease heatmaps</li>
+                    <li><i class="fas fa-check-circle"></i> Automated authority alerts</li>
                 </ul>
                 <button class="access-button">Access Portal</button>
             </div>
         </div>
+        
+        <!-- Telegram Integration Section -->
+        <div class="telegram-cta">
+            <h2>Interact with HealthMitra AI</h2>
+            <p>Our n8n-powered Telegram bot allows ASHA workers and patients to seamlessly submit reports, fetch vaccination schedules, and perform AI medical diagnostics via chat.</p>
+            <a href="#" class="tg-btn" target="_blank" title="Connect Telegram Bot (Add your link)">
+                <i class="fab fa-telegram-plane"></i> Launch Telegram Bot
+            </a>
+        </div>
+        
+        <footer>
+            <p>&copy; 2025 HealthMitra. SIH Winning Project. Building the future of Indian healthcare.</p>
+        </footer>
     </div>
 
     <script>

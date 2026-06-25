@@ -4,9 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Outbreak Alert Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-light: #ddd6fe;
+            --secondary: #6d28d9;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.4);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,63 +25,111 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
             padding: 20px;
         }
 
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+        }
+
         .header {
-            text-align: center;
+            padding: 30px;
             margin-bottom: 30px;
-            color: white;
+            border-left: 6px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-text h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .header-text p {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 500;
         }
 
         .back-home-btn {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: white;
+            color: var(--secondary);
             text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            padding: 8px 18px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 10px 20px;
             border-radius: 50px;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(4px);
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .back-home-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateX(-3px);
+            transform: translateX(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
         }
 
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        .header-actions {
+            display: flex;
+            gap: 15px;
         }
 
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+        
+        .btn-settings {
+            background: #fff;
+            color: #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
         }
 
         .search-section {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
             padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
         }
 
         .search-container {
@@ -83,35 +142,40 @@
         .search-input {
             flex: 1;
             padding: 15px 20px;
-            border: 2px solid #e1e5e9;
-            border-radius: 50px;
-            font-size: 16px;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            background: white;
             outline: none;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
 
         .search-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
         }
 
         .search-btn {
             padding: 15px 30px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 50px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
         }
 
         .search-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
         }
 
         .filters {
@@ -122,11 +186,14 @@
 
         .filter-select {
             padding: 10px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 25px;
-            font-size: 14px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
             outline: none;
             background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
         }
 
         .dashboard {
@@ -137,12 +204,8 @@
         }
 
         .stats-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
             padding: 25px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-            border-left: 5px solid #667eea;
+            border-left: 5px solid var(--primary);
         }
 
         .stats-header {
@@ -153,14 +216,15 @@
         }
 
         .stats-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #333;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--secondary);
         }
 
         .status-indicator {
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: #10b981;
             animation: pulse 2s infinite;
@@ -170,67 +234,70 @@
         .status-indicator.moderate { background: #f59e0b; }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
         }
 
         .metric {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
+            gap: 20px;
+            margin-bottom: 20px;
         }
 
         .metric-icon {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 24px;
             color: white;
         }
 
-        .metric-icon.total { background: linear-gradient(45deg, #3b82f6, #1d4ed8); }
-        .metric-icon.alerts { background: linear-gradient(45deg, #ef4444, #dc2626); }
-        .metric-icon.location { background: linear-gradient(45deg, #10b981, #059669); }
-        .metric-icon.time { background: linear-gradient(45deg, #f59e0b, #d97706); }
+        .metric-icon.total { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .metric-icon.alerts { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .metric-icon.location { background: linear-gradient(135deg, #10b981, #059669); }
+        .metric-icon.time { background: linear-gradient(135deg, #f59e0b, #d97706); }
 
         .metric-info h3 {
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
             margin-bottom: 5px;
+            color: var(--secondary);
         }
 
         .metric-info p {
-            color: #666;
-            font-size: 0.9rem;
+            color: #64748b;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
         }
 
         .alerts-section {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
             margin-bottom: 30px;
         }
 
         .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
             margin-bottom: 25px;
             display: flex;
             align-items: center;
             gap: 10px;
+            color: var(--secondary);
         }
 
         .alert-card {
-            border: 1px solid #e5e7eb;
+            background: rgba(255,255,255,0.6);
+            border: 1px solid rgba(255,255,255,0.8);
             border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -241,7 +308,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 4px;
+            width: 6px;
             height: 100%;
             background: #10b981;
         }
@@ -251,111 +318,192 @@
         .alert-card.critical::before { background: #dc2626; }
 
         .alert-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
 
         .alert-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .disease-name {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #333;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
         }
 
         .severity-badge {
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .severity-badge.low { background: #d1fae5; color: #065f46; }
-        .severity-badge.moderate { background: #fef3c7; color: #92400e; }
-        .severity-badge.high { background: #fee2e2; color: #991b1b; }
-        .severity-badge.critical { background: #fecaca; color: #7f1d1d; }
+        .severity-badge.low { background: #d1fae5; color: #065f46; border: 1px solid #bbf7d0; }
+        .severity-badge.moderate { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .severity-badge.high { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .severity-badge.critical { background: #fecaca; color: #7f1d1d; border: 1px solid #fca5a5; }
 
         .alert-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
         }
 
         .detail-item {
             text-align: center;
-            padding: 10px;
-            background: #f9fafb;
-            border-radius: 8px;
+            padding: 15px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
         .detail-value {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #333;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--secondary);
         }
 
         .detail-label {
-            font-size: 0.8rem;
-            color: #666;
+            font-size: 0.85rem;
+            color: #64748b;
             text-transform: uppercase;
-            margin-top: 2px;
+            margin-top: 5px;
+            font-weight: 600;
         }
 
         .no-alerts {
             text-align: center;
-            padding: 40px;
-            color: #666;
+            padding: 60px 20px;
+            color: var(--secondary);
         }
 
         .no-alerts i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: #10b981;
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--primary-light);
         }
 
         .loading {
-            display: none;
             text-align: center;
-            padding: 40px;
-        }
-
-        .spinner {
-            border: 3px solid #f3f4f6;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            padding: 60px;
+            color: var(--secondary);
+            font-weight: 600;
         }
 
         .chart-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-            height: 400px;
+            height: 450px;
+            margin-bottom: 30px;
         }
 
         .last-updated {
             text-align: center;
-            color: white;
-            font-size: 0.9rem;
+            color: var(--secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
             margin-top: 20px;
-            opacity: 0.8;
+            padding: 20px 0;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
         }
 
         @media (max-width: 768px) {
@@ -365,6 +513,7 @@
             
             .search-container {
                 flex-direction: column;
+                align-items: stretch;
             }
             
             .filters {
@@ -380,46 +529,48 @@
 <body>
     <div class="container">
         <!-- Header -->
-        <div class="header">
-            <a href="index.html" class="back-home-btn">← Back to HealthMitra</a>
-            <h1><i class="fas fa-virus"></i> Outbreak Alert Dashboard</h1>
-            <p>Real-time Disease Outbreak Monitoring System for Health Authorities</p>
+        <a href="index.html" class="back-home-btn">← Back to HealthMitra</a>
+        <div class="header glass-panel">
+            <div class="header-text">
+                <h1><i class="fas fa-virus"></i> Outbreak Alert Dashboard</h1>
+                <p>Real-time Disease Outbreak Monitoring powered by Google Sheets</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-settings" onclick="openApiModal()">
+                    <i class="fas fa-cog"></i> API Settings
+                </button>
+            </div>
         </div>
 
         <!-- Search Section -->
-        <div class="search-section">
+        <div class="search-section glass-panel">
             <div class="search-container">
-                <input type="text" id="locationInput" class="search-input" placeholder="Enter location (e.g., Mumbai, Delhi, Bangalore...)" autocomplete="off">
+                <input type="text" id="locationInput" class="search-input" placeholder="Enter location (e.g., Mumbai, Delhi...)" autocomplete="off">
                 <button onclick="searchAlerts()" class="search-btn">
                     <i class="fas fa-search"></i> Search Alerts
                 </button>
             </div>
             <div class="filters">
-                <select id="hoursFilter" class="filter-select">
-                    <option value="1">Last 1 Hour</option>
-                    <option value="6">Last 6 Hours</option>
-                    <option value="24" selected>Last 24 Hours</option>
-                    <option value="72">Last 3 Days</option>
-                    <option value="168">Last Week</option>
-                </select>
                 <select id="severityFilter" class="filter-select">
                     <option value="">All Severities</option>
                     <option value="CRITICAL">Critical Only</option>
                     <option value="HIGH">High & Above</option>
                     <option value="MODERATE">Moderate & Above</option>
                 </select>
+                <button class="btn" style="padding: 10px 15px; font-size: 0.9rem;" onclick="refreshData()">
+                    <i class="fas fa-sync-alt"></i> Refresh Full Data
+                </button>
             </div>
         </div>
 
         <!-- Loading State -->
-        <div id="loading" class="loading">
-            <div class="spinner"></div>
-            <p>Fetching outbreak data...</p>
+        <div id="loading" class="loading glass-panel">
+            <p>Fetching outbreak data from Google Sheets...</p>
         </div>
 
         <!-- Dashboard Stats -->
         <div id="dashboard" class="dashboard" style="display: none;">
-            <div class="stats-card">
+            <div class="stats-card glass-panel">
                 <div class="stats-header">
                     <h3 class="stats-title">Location Overview</h3>
                     <div id="statusIndicator" class="status-indicator"></div>
@@ -429,25 +580,15 @@
                         <i class="fas fa-map-marker-alt"></i>
                     </div>
                     <div class="metric-info">
-                        <h3 id="currentLocation">-</h3>
-                        <p>Current Location</p>
-                    </div>
-                </div>
-                <div class="metric">
-                    <div class="metric-icon time">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="metric-info">
-                        <h3 id="timeframe">-</h3>
-                        <p>Time Period</p>
+                        <h3 id="currentLocation">Global</h3>
+                        <p>Current View</p>
                     </div>
                 </div>
             </div>
 
-            <div class="stats-card">
+            <div class="stats-card glass-panel">
                 <div class="stats-header">
                     <h3 class="stats-title">Alert Statistics</h3>
-                    <div class="status-indicator"></div>
                 </div>
                 <div class="metric">
                     <div class="metric-icon alerts">
@@ -455,23 +596,19 @@
                     </div>
                     <div class="metric-info">
                         <h3 id="alertCount">0</h3>
-                        <p>Active Alerts</p>
-                    </div>
-                </div>
-                <div class="metric">
-                    <div class="metric-icon total">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <div class="metric-info">
-                        <h3 id="totalReports">0</h3>
-                        <p>Total Reports</p>
+                        <p>Total Alerts Matched</p>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Chart Section -->
+        <div id="chartSection" class="chart-container glass-panel" style="display: none;">
+            <canvas id="diseaseChart"></canvas>
+        </div>
+
         <!-- Alerts Section -->
-        <div id="alertsSection" class="alerts-section" style="display: none;">
+        <div id="alertsSection" class="alerts-section glass-panel" style="display: none;">
             <h2 class="section-title">
                 <i class="fas fa-bell"></i> 
                 Active Disease Alerts
@@ -479,142 +616,228 @@
             <div id="alertsList"></div>
         </div>
 
-        <!-- Chart Section -->
-        <div id="chartSection" class="chart-container" style="display: none;">
-            <canvas id="diseaseChart"></canvas>
-        </div>
-
         <div class="last-updated">
             <i class="fas fa-sync-alt"></i> 
-            Last updated: <span id="lastUpdated">Never</span>
+            Last updated: <span id="lastUpdated">Never</span> | Connected via n8n
+        </div>
+    </div>
+
+    <!-- API Settings Modal -->
+    <div class="modal-overlay" id="apiModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Google Sheets Configuration</h3>
+                <button class="close-btn" onclick="closeApiModal()">&times;</button>
+            </div>
+            <p style="margin-bottom: 20px; font-size: 0.9rem; color: #666; line-height: 1.5;">
+                Connect this dashboard to your n8n-powered Google Sheet by entering the public Sheet ID and your Google API Key.
+            </p>
+            <div class="form-group">
+                <label>Spreadsheet ID</label>
+                <input type="text" id="sheetIdInput" placeholder="e.g. 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms">
+            </div>
+            <div class="form-group">
+                <label>Google API Key</label>
+                <input type="text" id="apiKeyInput" placeholder="AIzaSy...">
+            </div>
+            <div class="form-group">
+                <label>Sheet Name / Range</label>
+                <input type="text" id="rangeInput" value="Outbreak_Alerts!A2:E" placeholder="e.g. Outbreak_Alerts!A2:E">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-settings" onclick="closeApiModal()">Cancel</button>
+                <button class="btn" onclick="saveApiSettings()">Save & Sync</button>
+            </div>
         </div>
     </div>
 
     <script>
         let currentChart = null;
+        let allAlerts = [];
 
-        // Search function
-        async function searchAlerts() {
-            const location = document.getElementById('locationInput').value.trim();
-            const hours = document.getElementById('hoursFilter').value;
-            
-            if (!location) {
-                alert('Please enter a location');
+        // Modal Functions
+        function openApiModal() {
+            document.getElementById('sheetIdInput').value = localStorage.getItem('hm_out_sheet_id') || '';
+            document.getElementById('apiKeyInput').value = localStorage.getItem('hm_out_api_key') || '';
+            document.getElementById('rangeInput').value = localStorage.getItem('hm_out_range') || 'Outbreak_Alerts!A2:E';
+            document.getElementById('apiModal').classList.add('active');
+        }
+        function closeApiModal() {
+            document.getElementById('apiModal').classList.remove('active');
+        }
+        function saveApiSettings() {
+            localStorage.setItem('hm_out_sheet_id', document.getElementById('sheetIdInput').value.trim());
+            localStorage.setItem('hm_out_api_key', document.getElementById('apiKeyInput').value.trim());
+            localStorage.setItem('hm_out_range', document.getElementById('rangeInput').value.trim());
+            closeApiModal();
+            refreshData();
+        }
+
+        // Default Dummy Data
+        const dummyData = [
+            { location: "Mumbai", disease: "Dengue", count: 45, date: "2025-06-25", notes: "Increasing trend" },
+            { location: "Mumbai", disease: "Malaria", count: 12, date: "2025-06-24", notes: "Stable" },
+            { location: "Delhi", disease: "Cholera", count: 5, date: "2025-06-25", notes: "Contained" },
+            { location: "Bangalore", disease: "Dengue", count: 20, date: "2025-06-23", notes: "Needs attention" }
+        ];
+
+        async function fetchUserData() {
+            const sheetId = localStorage.getItem('hm_out_sheet_id');
+            const apiKey = localStorage.getItem('hm_out_api_key');
+            const range = localStorage.getItem('hm_out_range') || 'Outbreak_Alerts!A2:E';
+
+            if (!sheetId || !apiKey) {
+                setTimeout(() => {
+                    allAlerts = [...dummyData];
+                    displayResults(allAlerts, "Global");
+                }, 800);
                 return;
             }
 
-            showLoading();
-            
             try {
-                const response = await fetch(`/api/outbreak/${encodeURIComponent(location)}?hours=${hours}`);
-                const data = await response.json();
-            
+                const url = \`https://sheets.googleapis.com/v4/spreadsheets/\${sheetId}/values/\${range}?key=\${apiKey}\`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('API Error');
+                const result = await response.json();
                 
-                if (data.success) {
-                    displayResults(data.data);
+                if (result.values && result.values.length > 0) {
+                    allAlerts = result.values.map(row => ({
+                        location: row[0] || 'Unknown',
+                        disease: row[1] || 'Unknown',
+                        count: parseInt(row[2]) || 0,
+                        date: row[3] || '',
+                        notes: row[4] || ''
+                    }));
                 } else {
-                    showError('Failed to fetch alerts');
+                    allAlerts = [];
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                showError('Network error occurred');
+                displayResults(allAlerts, "Global");
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loading').innerHTML = '<p style="color:red;">Error connecting to Google Sheets.</p>';
             }
+        }
+
+        function refreshData() {
+            document.getElementById('locationInput').value = '';
+            showLoading();
+            fetchUserData();
+        }
+
+        function searchAlerts() {
+            const location = document.getElementById('locationInput').value.trim().toLowerCase();
+            const severityFilter = document.getElementById('severityFilter').value;
+            
+            let filtered = allAlerts;
+            
+            if (location) {
+                filtered = filtered.filter(a => a.location.toLowerCase().includes(location));
+            }
+            
+            if (severityFilter) {
+                const levelMap = { 'LOW': 1, 'MODERATE': 2, 'HIGH': 3, 'CRITICAL': 4 };
+                const requiredLevel = levelMap[severityFilter];
+                filtered = filtered.filter(a => {
+                    const sev = getSeverity(a.count);
+                    return levelMap[sev] >= requiredLevel;
+                });
+            }
+            
+            displayResults(filtered, location ? location.toUpperCase() : "Global");
         }
 
         function showLoading() {
             document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').innerHTML = '<p>Fetching outbreak data...</p>';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('alertsSection').style.display = 'none';
             document.getElementById('chartSection').style.display = 'none';
         }
 
-        function displayResults(data) {
+        function displayResults(alerts, locationLabel) {
             document.getElementById('loading').style.display = 'none';
             document.getElementById('dashboard').style.display = 'grid';
             document.getElementById('alertsSection').style.display = 'block';
             document.getElementById('chartSection').style.display = 'block';
 
             // Update stats
-            document.getElementById('currentLocation').textContent = data.location;
-            document.getElementById('timeframe').textContent = data.timeframe;
-            document.getElementById('alertCount').textContent = data.alerts.length;
-            document.getElementById('totalReports').textContent = data.totalReports;
+            document.getElementById('currentLocation').textContent = locationLabel;
+            document.getElementById('alertCount').textContent = alerts.length;
             
             // Update status indicator
             const indicator = document.getElementById('statusIndicator');
-            const alertLevel = getAlertLevel(data.alerts);
-            indicator.className = `status-indicator ${alertLevel}`;
+            const alertLevel = getAlertLevel(alerts);
+            indicator.className = \`status-indicator \${alertLevel}\`;
 
             // Display alerts
-            displayAlerts(data.alerts);
+            displayAlertsList(alerts);
             
             // Create chart
-            createChart(data.alerts);
+            createChart(alerts);
             
             // Update timestamp
             document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
         }
 
         function getAlertLevel(alerts) {
-            if (alerts.some(alert => alert.count >= 15)) return 'critical';
-            if (alerts.some(alert => alert.count >= 10)) return 'high';
+            if (alerts.some(alert => alert.count >= 30)) return 'critical';
+            if (alerts.some(alert => alert.count >= 15)) return 'high';
             if (alerts.length > 0) return 'moderate';
             return 'low';
         }
 
         function getSeverity(count) {
-            if (count >= 15) return 'CRITICAL';
-            if (count >= 10) return 'HIGH';
-            if (count >= 8) return 'MODERATE';
+            if (count >= 30) return 'CRITICAL';
+            if (count >= 15) return 'HIGH';
+            if (count >= 5) return 'MODERATE';
             return 'LOW';
         }
 
-        function displayAlerts(alerts) {
+        function displayAlertsList(alerts) {
             const container = document.getElementById('alertsList');
             
             if (alerts.length === 0) {
-                container.innerHTML = `
+                container.innerHTML = \`
                     <div class="no-alerts">
                         <i class="fas fa-shield-alt"></i>
                         <h3>No Active Alerts</h3>
-                        <p>Great news! No disease outbreaks detected in this location during the selected time period.</p>
+                        <p>No disease outbreaks detected matching your criteria.</p>
                     </div>
-                `;
+                \`;
                 return;
             }
 
             container.innerHTML = alerts.map(alert => {
                 const severity = getSeverity(alert.count);
-                const trend = Math.random() > 0.5 ? 'INCREASING' : 'STABLE'; // Simulate trend
                 
-                return `
-                    <div class="alert-card ${severity.toLowerCase()}">
+                return \`
+                    <div class="alert-card \${severity.toLowerCase()}">
                         <div class="alert-header">
                             <h3 class="disease-name">
-                                <i class="fas fa-virus"></i> ${alert.disease}
+                                <i class="fas fa-virus"></i> \${alert.disease}
                             </h3>
-                            <span class="severity-badge ${severity.toLowerCase()}">${severity}</span>
+                            <span class="severity-badge \${severity.toLowerCase()}">\${severity}</span>
                         </div>
                         <div class="alert-details">
                             <div class="detail-item">
-                                <div class="detail-value">${alert.count}</div>
-                                <div class="detail-label">Cases Reported</div>
+                                <div class="detail-value">\${alert.count}</div>
+                                <div class="detail-label">Cases</div>
                             </div>
                             <div class="detail-item">
-                                <div class="detail-value">${trend}</div>
-                                <div class="detail-label">Trend</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-value">${alert.location}</div>
+                                <div class="detail-value" style="font-size:1rem;">\${alert.location}</div>
                                 <div class="detail-label">Location</div>
                             </div>
                             <div class="detail-item">
-                                <div class="detail-value">${new Date().toLocaleDateString()}</div>
-                                <div class="detail-label">Last Reported</div>
+                                <div class="detail-value" style="font-size:1rem;">\${alert.date || 'N/A'}</div>
+                                <div class="detail-label">Date</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-value" style="font-size:1rem;">\${alert.notes || '-'}</div>
+                                <div class="detail-label">Notes</div>
                             </div>
                         </div>
                     </div>
-                `;
+                \`;
             }).join('');
         }
 
@@ -627,21 +850,30 @@
 
             if (alerts.length === 0) {
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                ctx.font = '16px Arial';
+                ctx.font = '16px Inter';
                 ctx.fillStyle = '#666';
                 ctx.textAlign = 'center';
                 ctx.fillText('No data to display', ctx.canvas.width / 2, ctx.canvas.height / 2);
                 return;
             }
 
+            // Group by disease for the chart
+            const diseaseTotals = {};
+            alerts.forEach(a => {
+                diseaseTotals[a.disease] = (diseaseTotals[a.disease] || 0) + a.count;
+            });
+            
+            const labels = Object.keys(diseaseTotals);
+            const data = Object.values(diseaseTotals);
+
             currentChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: alerts.map(alert => alert.disease),
+                    labels: labels,
                     datasets: [{
-                        data: alerts.map(alert => alert.count),
+                        data: data,
                         backgroundColor: [
-                            '#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6',
+                            '#8b5cf6', '#ef4444', '#f59e0b', '#10b981', '#3b82f6',
                             '#f97316', '#06b6d4', '#84cc16', '#ec4899', '#6366f1'
                         ],
                         borderWidth: 2,
@@ -654,24 +886,21 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Disease Distribution',
-                            font: { size: 16, weight: 'bold' }
+                            text: 'Disease Case Distribution',
+                            font: { size: 16, weight: 'bold', family: 'Outfit' },
+                            color: '#6d28d9'
                         },
                         legend: {
                             position: 'bottom',
                             labels: {
                                 padding: 15,
-                                usePointStyle: true
+                                usePointStyle: true,
+                                font: { family: 'Inter' }
                             }
                         }
                     }
                 }
             });
-        }
-
-        function showError(message) {
-            document.getElementById('loading').style.display = 'none';
-            alert(message);
         }
 
         // Enter key support for search
@@ -682,12 +911,10 @@
         });
 
         // Filter change handlers
-        document.getElementById('hoursFilter').addEventListener('change', function() {
-            const location = document.getElementById('locationInput').value.trim();
-            if (location) {
-                searchAlerts();
-            }
-        });
+        document.getElementById('severityFilter').addEventListener('change', searchAlerts);
+
+        // Init
+        document.addEventListener('DOMContentLoaded', fetchUserData);
     </script>
 </body>
 </html>
