@@ -467,9 +467,6 @@
                     <p>Manage and monitor infant vaccination records powered by n8n & Google Sheets</p>
                 </div>
                 <div class="header-actions">
-                    <button class="btn btn-settings" onclick="openApiModal()">
-                        <i class="fas fa-cog"></i> API Settings
-                    </button>
                     <button class="btn" onclick="refreshData()">
                         <i class="fas fa-sync-alt"></i> Refresh Data
                     </button>
@@ -539,36 +536,15 @@
         </div>
     </div>
 
-    <!-- API Settings Modal -->
-    <div class="modal-overlay" id="apiModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Google Sheets Configuration</h3>
-                <button class="close-btn" onclick="closeApiModal()">&times;</button>
-            </div>
-            <p style="margin-bottom: 20px; font-size: 0.9rem; color: #666; line-height: 1.5;">
-                Connect this dashboard to your n8n-powered Google Sheet by entering the public Sheet ID and your Google API Key.
-            </p>
-            <div class="form-group">
-                <label>Spreadsheet ID</label>
-                <input type="text" id="sheetIdInput" placeholder="e.g. 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms">
-            </div>
-            <div class="form-group">
-                <label>Google API Key</label>
-                <input type="text" id="apiKeyInput" placeholder="AIzaSy...">
-            </div>
-            <div class="form-group">
-                <label>Sheet Name / Range</label>
-                <input type="text" id="rangeInput" value="Vaccination_Records!A2:I" placeholder="e.g. Vaccination_Records!A2:I">
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-settings" onclick="closeApiModal()">Cancel</button>
-                <button class="btn" onclick="saveApiSettings()">Save & Sync</button>
-            </div>
-        </div>
-    </div>
-
     <script>
+        // =========================================================================
+        // 🔴🔴🔴 GOOGLE SHEETS API CONFIGURATION - FILL IN YOUR DETAILS 🔴🔴🔴
+        // =========================================================================
+        const GOOGLE_SHEET_ID = 'YOUR_SPREADSHEET_ID_HERE'; // e.g. 1BxiMVs0...
+        const GOOGLE_API_KEY = 'YOUR_API_KEY_HERE';         // e.g. AIzaSy...
+        const SHEET_RANGE = 'Vaccination_Records!A2:I';     // Adjust based on your tab name
+        // =========================================================================
+
         // Default dummy data
         const dummyAppointments = [
             { name: "Arjun", patientId: "PD001234", age: "2 months", vaccine: "BCG", date: "2025-09-22", time: "09:30", status: "confirmed", contact: "+91-98765-43210", notes: "Birth dose" },
@@ -583,30 +559,8 @@
         let originalAppointments = [];
         let currentSort = { field: 'datetime', direction: 'asc' };
 
-        // Modal Functions
-        function openApiModal() {
-            document.getElementById('sheetIdInput').value = localStorage.getItem('hm_vac_sheet_id') || '';
-            document.getElementById('apiKeyInput').value = localStorage.getItem('hm_vac_api_key') || '';
-            document.getElementById('rangeInput').value = localStorage.getItem('hm_vac_range') || 'Vaccination_Records!A2:I';
-            document.getElementById('apiModal').classList.add('active');
-        }
-        function closeApiModal() {
-            document.getElementById('apiModal').classList.remove('active');
-        }
-        function saveApiSettings() {
-            localStorage.setItem('hm_vac_sheet_id', document.getElementById('sheetIdInput').value.trim());
-            localStorage.setItem('hm_vac_api_key', document.getElementById('apiKeyInput').value.trim());
-            localStorage.setItem('hm_vac_range', document.getElementById('rangeInput').value.trim());
-            closeApiModal();
-            refreshData();
-        }
-
         async function fetchUserData() {
-            const sheetId = localStorage.getItem('hm_vac_sheet_id');
-            const apiKey = localStorage.getItem('hm_vac_api_key');
-            const range = localStorage.getItem('hm_vac_range') || 'Vaccination_Records!A2:I';
-
-            if (!sheetId || !apiKey) {
+            if (GOOGLE_SHEET_ID === 'YOUR_SPREADSHEET_ID_HERE' || GOOGLE_API_KEY === 'YOUR_API_KEY_HERE') {
                 setTimeout(() => {
                     originalAppointments = [...dummyAppointments];
                     appointments = [...originalAppointments];
@@ -616,7 +570,7 @@
             }
 
             try {
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_ID}/values/${SHEET_RANGE}?key=${GOOGLE_API_KEY}`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('API Error');
                 const result = await response.json();
