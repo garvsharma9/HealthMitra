@@ -353,53 +353,6 @@
             font-size: 1.1rem;
         }
 
-        .contact { color: var(--text-muted); }
-        .contact i { color: #94a3b8; margin-right: 6px; }
-        .dob i { color: #94a3b8; margin-right: 6px; }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .badge.yes { background: var(--danger-light); color: #b91c1c; }
-        .badge.no { background: var(--success-light); color: #047857; }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-
-        .status-badge::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .status-badge.sam { 
-            background: var(--danger-light); 
-            color: #b91c1c; 
-        }
-        .status-badge.sam::before { background: #ef4444; }
-
-        .status-badge.normal { 
-            background: var(--success-light); 
-            color: #047857; 
-        }
-        .status-badge.normal::before { background: #10b981; }
-
         .no-data {
             text-align: center;
             padding: 80px 20px;
@@ -410,116 +363,6 @@
             font-size: 3rem;
             color: #cbd5e1;
             margin-bottom: 16px;
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal-content {
-            background: var(--bg-card);
-            width: 100%;
-            max-width: 550px;
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            transform: translateY(20px) scale(0.95);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .modal-overlay.active .modal-content {
-            transform: translateY(0) scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .modal-header h3 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--secondary);
-        }
-
-        .close-btn {
-            background: #f1f5f9;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-        
-        .close-btn:hover {
-            background: #e2e8f0;
-            color: var(--secondary);
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--secondary);
-            font-size: 0.95rem;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 1rem;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            outline: none;
-            transition: all 0.2s;
-            background: #f8fafc;
-        }
-
-        .form-group input:focus {
-            background: #ffffff;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-light);
-        }
-        
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 16px;
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border-color);
         }
 
         /* Footer */
@@ -543,13 +386,12 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header glass-panel">
             <a href="index.html" class="back-home-btn">← Back to HealthMitra</a>
             <div class="header-content">
                 <div class="header-text">
-                    <h1>User Details Dashboard</h1>
-                    <p>Monitor and manage ASHA worker patient data connected to n8n & Google Sheets</p>
+                    <h1>Outbreak Reports Dashboard</h1>
+                    <p>Monitor live health anomaly data connected to Google Sheets</p>
                 </div>
                 <div class="header-actions">
                     <button class="btn sync-button" onclick="refreshData()">
@@ -559,20 +401,19 @@
             </div>
         </div>
 
-        <!-- Statistics Cards -->
         <div class="stats-grid">
             <div class="stat-card glass-panel blue">
                 <div class="stat-content">
                     <h3 id="total-users">0</h3>
-                    <p>Total Users</p>
+                    <p>Total Reports</p>
                 </div>
-                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-icon"><i class="fas fa-file-medical"></i></div>
             </div>
 
             <div class="stat-card glass-panel red">
                 <div class="stat-content">
                     <h3 id="sam-count">0</h3>
-                    <p>SAM Cases</p>
+                    <p>High Severity</p>
                 </div>
                 <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
             </div>
@@ -580,36 +421,18 @@
             <div class="stat-card glass-panel green">
                 <div class="stat-content">
                     <h3 id="normal-count">0</h3>
-                    <p>Normal Cases</p>
+                    <p>Low Severity</p>
                 </div>
                 <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
             </div>
-
-            <div class="stat-card glass-panel orange">
-                <div class="stat-content">
-                    <h3 id="odema-count">0</h3>
-                    <p>Odema Cases</p>
-                </div>
-                <div class="stat-icon"><i class="fas fa-activity"></i></div>
-            </div>
         </div>
 
-        <!-- Filters -->
         <div class="filters glass-panel">
             <div class="filters-content">
                 <div class="filter-group">
                     <div class="search-container">
                         <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="Search by child name..." id="search-input" oninput="filterData()">
-                    </div>
-                    
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-filter" style="color: #64748b;"></i>
-                        <select class="filter-select" id="status-filter" onchange="filterData()">
-                            <option value="All">All Status</option>
-                            <option value="Normal">Normal</option>
-                            <option value="SAM">SAM</option>
-                        </select>
+                        <input type="text" class="search-input" placeholder="Search by location..." id="search-input" oninput="filterData()">
                     </div>
                 </div>
 
@@ -619,12 +442,11 @@
             </div>
         </div>
 
-        <!-- Data Table -->
         <div class="data-table-container glass-panel">
             <div class="table-header">
                 <h2>
                     <i class="fas fa-table" style="color: var(--primary);"></i>
-                    User Details (<span id="record-count">0</span> records)
+                    Live Report Log (<span id="record-count">0</span> records)
                 </h2>
             </div>
             
@@ -632,19 +454,18 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Child Name</th>
-                            <th>Contact</th>
-                            <th>Date of Birth</th>
-                            <th>Age</th>
-                            <th>MUAC (cm)</th>
-                            <th>Odema</th>
-                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                            <th>Reported Symptoms</th>
+                            <th>AI Guessed Disease</th>
+                            <th>Severity</th>
                         </tr>
                     </thead>
                     <tbody id="data-table-body">
                         <tr>
-                            <td colspan="7" class="loading">
-                                Loading data...
+                            <td colspan="5" class="no-data" id="loading-msg">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading live data...</p>
                             </td>
                         </tr>
                     </tbody>
@@ -652,90 +473,57 @@
             </div>
         </div>
 
-        <!-- Footer -->
         <div class="footer">
-            <p>© 2025 HealthMitra. Connected via n8n to Google Sheets.</p>
+            <p>© 2025 HealthMitra. Connected live to Google Sheets.</p>
         </div>
     </div>
 
     <script>
         // =========================================================================
-        // Google Sheets API Configuration (Keys are securely hidden in Vercel)
-        // Make sure to set ASHA_SHEET_ID and GOOGLE_API_KEY in your .env/Vercel
+        // Google Sheets API Configuration
+        // Keys are securely hidden in Vercel / .env.local
         // =========================================================================
-        const SHEET_RANGE = 'Patients!A2:G'; // Adjust based on your tab name
+        const SHEET_RANGE = 'Sheet1!A2:E'; // Matches your column structure
         // =========================================================================
 
         let userData = [];
         let filteredData = [];
 
-        // Dummy fallback data
-        const dummyData = [
-            { id: 1, childName: "Aarav Sharma", dob: "2020-03-15", muac: 12.5, odema: "No", status: "Normal", contact: "+91 98765 43210" },
-            { id: 2, childName: "Priya Patel", dob: "2019-07-22", muac: 11.2, odema: "Yes", status: "SAM", contact: "+91 87654 32109" },
-            { id: 3, childName: "Arjun Singh", dob: "2021-01-10", muac: 13.8, odema: "No", status: "Normal", contact: "+91 76543 21098" },
-            { id: 4, childName: "Ananya Gupta", dob: "2020-09-05", muac: 10.8, odema: "Yes", status: "SAM", contact: "+91 65432 10987" }
-        ];
-
-        function formatDate(dateString) {
-            if(!dateString) return '';
-            try {
-                const date = new Date(dateString);
-                if(isNaN(date)) return dateString;
-                return date.toLocaleDateString('en-GB');
-            } catch(e) { return dateString; }
-        }
-
-        function calculateAge(dob) {
-            if(!dob) return 0;
-            const today = new Date();
-            const birthDate = new Date(dob);
-            if(isNaN(birthDate)) return 0;
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-            return age;
-        }
-
         function updateStatistics() {
             document.getElementById('total-users').textContent = userData.length;
-            document.getElementById('sam-count').textContent = userData.filter(user => user.status === 'SAM').length;
-            document.getElementById('normal-count').textContent = userData.filter(user => user.status === 'Normal').length;
-            document.getElementById('odema-count').textContent = userData.filter(user => user.odema && user.odema.toLowerCase() === 'yes').length;
+            document.getElementById('sam-count').textContent = userData.filter(row => row.severity && row.severity.toLowerCase().includes('high')).length;
+            document.getElementById('normal-count').textContent = userData.filter(row => row.severity && row.severity.toLowerCase().includes('low')).length;
         }
 
         function renderTable(data) {
             const tableBody = document.getElementById('data-table-body');
+            
             if (data.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="7" class="no-data"><i class="fas fa-folder-open"></i><p>No records found matching your criteria</p></td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="5" class="no-data"><i class="fas fa-folder-open"></i><p>No records found matching your criteria.</p></td></tr>`;
+                document.getElementById('record-count').textContent = "0";
                 return;
             }
-            tableBody.innerHTML = data.map((user) => `
+
+            tableBody.innerHTML = data.map((row) => `
                 <tr>
-                    <td class="child-name">${user.childName}</td>
-                    <td class="contact"><i class="fas fa-phone"></i> ${user.contact}</td>
-                    <td class="dob"><i class="fas fa-calendar"></i> ${formatDate(user.dob)}</td>
-                    <td class="age">${calculateAge(user.dob)} years</td>
-                    <td class="muac ${user.muac < 11.5 ? 'low' : 'normal'}">${user.muac}</td>
-                    <td><span class="badge ${user.odema.toLowerCase()}">${user.odema}</span></td>
-                    <td>
-                        <span class="status-badge ${user.status.toLowerCase()}">${user.status}</span>
-                    </td>
+                    <td style="font-weight: 600; color: var(--primary);">${row.date}</td>
+                    <td class="child-name">${row.location}</td>
+                    <td>${row.symptoms}</td>
+                    <td><span style="background:#f1f5f9; padding: 4px 8px; border-radius: 4px; font-weight:600;">${row.disease}</span></td>
+                    <td style="font-weight: 700; color: ${row.severity.toLowerCase() === 'high' ? 'var(--danger)' : row.severity.toLowerCase() === 'moderate' ? 'var(--warning)' : 'var(--success)'}">${row.severity}</td>
                 </tr>
             `).join('');
+            
             document.getElementById('record-count').textContent = data.length;
         }
 
         function filterData() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const statusFilter = document.getElementById('status-filter').value;
-            filteredData = userData.filter(user => {
-                const matchesSearch = user.childName.toLowerCase().includes(searchTerm);
-                const matchesStatus = statusFilter === 'All' || user.status === statusFilter;
-                return matchesSearch && matchesStatus;
+            
+            filteredData = userData.filter(row => {
+                return row.location.toLowerCase().includes(searchTerm) || row.symptoms.toLowerCase().includes(searchTerm);
             });
+            
             renderTable(filteredData);
         }
 
@@ -743,57 +531,62 @@
             try {
                 // Fetch from our secure Vercel API Route instead of exposing keys to the browser
                 const url = `/api/getGoogleSheet?type=asha&range=${encodeURIComponent(SHEET_RANGE)}`;
+                
                 const response = await fetch(url);
-                if (!response.ok) throw new Error('API Error');
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
                 const result = await response.json();
                 
                 if (result.error) throw new Error(result.error);
 
                 if (result.values && result.values.length > 0) {
-                    userData = result.values.map((row, idx) => {
+                    // Map the arrays returned by Google Sheets into clean objects
+                    userData = result.values.map(row => {
                         return {
-                            id: idx + 1,
-                            childName: row[0] || 'Unknown',
-                            contact: row[1] || 'N/A',
-                            dob: row[2] || '',
-                            age: row[3] || '',
-                            muac: parseFloat(row[4]) || 0,
-                            odema: row[5] || 'No',
-                            status: row[6] || 'Normal'
+                            date: row[0] || 'N/A',
+                            location: row[1] || 'Unknown',
+                            symptoms: row[2] || 'None reported',
+                            disease: row[3] || 'Pending analysis',
+                            severity: row[4] || 'Low' // Default severity if empty
                         };
                     });
                 } else {
-                    userData = [];
+                    userData = []; // Sheet is empty
                 }
+
                 filteredData = userData;
                 updateStatistics();
                 renderTable(filteredData);
+                
             } catch (err) {
-                console.warn('Live data unavailable, loading demo data:', err.message);
-                userData = dummyData;
-                filteredData = userData;
-                updateStatistics();
-                renderTable(filteredData);
+                console.error("Fetch error:", err);
+                document.getElementById('data-table-body').innerHTML = `<tr><td colspan="5" class="no-data"><i class="fas fa-exclamation-triangle" style="color: var(--danger)"></i><p style="color: var(--danger)">Error fetching data from Google Sheets.</p><p style="font-size: 0.8rem; margin-top: 10px;">${err.message}</p></td></tr>`;
             }
         }
 
         function refreshData() {
-            document.getElementById('data-table-body').innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 40px; color:var(--primary); font-weight: 500;">Loading live data...</td></tr>`;
+            document.getElementById('data-table-body').innerHTML = `<tr><td colspan="5" class="no-data" id="loading-msg"><i class="fas fa-spinner fa-spin"></i><p>Loading live data...</p></td></tr>`;
             fetchUserData();
         }
 
         function exportData() {
-            const csvContent = "data:text/csv;charset=utf-8," + "Child Name,Contact,Date of Birth,Age,MUAC (cm),Odema,Status\n" +
-                filteredData.map(u => `${u.childName},${u.contact},${formatDate(u.dob)},${calculateAge(u.dob)},${u.muac},${u.odema},${u.status}`).join("\n");
+            if(filteredData.length === 0) {
+                alert("No data to export!");
+                return;
+            }
+            const csvContent = "data:text/csv;charset=utf-8," + "Date,Location,Reported Symptoms,AI Guessed Disease,Severity\n" +
+                filteredData.map(u => `"${u.date}","${u.location}","${u.symptoms}","${u.disease}","${u.severity}"`).join("\n");
+            
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "user_details.csv");
+            link.setAttribute("download", "outbreak_reports.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
+        // Load data when page opens
         document.addEventListener('DOMContentLoaded', fetchUserData);
     </script>
 </body>
