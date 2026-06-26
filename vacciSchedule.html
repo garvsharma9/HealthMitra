@@ -569,16 +569,16 @@
                 if (result.error) throw new Error(result.error);
 
                 if (result.values && result.values.length > 0) {
-                    originalAppointments = result.values.map(row => ({
-                        name: row[0] || 'Unknown',
-                        patientId: row[1] || 'N/A',
-                        age: row[2] || '',
-                        vaccine: row[3] || '',
-                        date: row[4] || '',
-                        time: row[5] || '',
-                        status: row[6] || 'pending',
-                        contact: row[7] || '',
-                        notes: row[8] || ''
+                    originalAppointments = result.values.map((row, index) => ({
+                        name: row[0] || 'Unknown',         // Column A
+                        patientId: `PD${1000 + index}`,    // Auto-generates an ID since it's missing from the sheet
+                        age: row[1] || '',                 // Column B
+                        vaccine: row[2] || '',             // Column C
+                        date: row[3] || '',                // Column D
+                        time: row[4] || '',                // Column E
+                        status: row[5] || 'pending',       // Column F
+                        contact: row[6] || '',             // Column G
+                        notes: row[7] || ''                // Column H
                     }));
                 } else {
                     originalAppointments = [];
