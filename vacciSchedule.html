@@ -128,10 +128,6 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
         }
-        
-        .btn-settings:hover {
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
 
         .stats-bar {
             display: grid;
@@ -313,6 +309,7 @@
         .pneumococcal { background: #ffedd5; color: #ea580c; }
         .rotavirus { background: #e0f2fe; color: #0284c7; }
         .ipv { background: #dcfce7; color: #16a34a; }
+        .rabies { background: #fce7f3; color: #db2777; }
 
         .date-cell, .time-cell {
             color: #475569;
@@ -329,7 +326,7 @@
             text-transform: uppercase;
         }
 
-        .confirmed { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+        .confirmed, .done { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
         .pending { background: #fef3c7; color: #ca8a04; border: 1px solid #fde68a; }
         .cancelled { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
         .completed { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
@@ -348,98 +345,6 @@
             font-size: 4rem;
             color: var(--primary-light);
             margin-bottom: 20px;
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal-content {
-            background: white;
-            width: 100%;
-            max-width: 500px;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
-        }
-        
-        .modal-overlay.active .modal-content {
-            transform: translateY(0);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-header h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
-            color: var(--secondary);
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-            font-size: 0.9rem;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-        }
-
-        .form-group input:focus {
-            border-color: var(--primary);
-        }
-        
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 30px;
         }
 
         .footer {
@@ -485,15 +390,11 @@
             </div>
             <div class="stat-item glass-panel">
                 <span class="stat-number" id="confirmedCount" style="color: #10b981;">0</span>
-                <span class="stat-label">Confirmed</span>
+                <span class="stat-label">Confirmed/Done</span>
             </div>
             <div class="stat-item glass-panel">
                 <span class="stat-number" id="pendingCount" style="color: #f59e0b;">0</span>
                 <span class="stat-label">Pending</span>
-            </div>
-            <div class="stat-item glass-panel">
-                <span class="stat-number" id="completedCount" style="color: #3b82f6;">0</span>
-                <span class="stat-label">Completed</span>
             </div>
         </div>
 
@@ -501,7 +402,7 @@
             <div class="controls-row">
                 <div class="search-container">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search by patient name, vaccine type, or status...">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search by patient, vaccine, location, or contact...">
                 </div>
                 <div class="sort-buttons">
                     <button class="sort-btn active" onclick="sortTable('datetime')">Date & Time</button>
@@ -517,7 +418,7 @@
                 <thead>
                     <tr>
                         <th onclick="sortTable('name')">Child Details <i class="fas fa-sort"></i></th>
-                        <th onclick="sortTable('age')">Age <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable('age')">Age & DOB <i class="fas fa-sort"></i></th>
                         <th onclick="sortTable('vaccine')">Vaccine Type <i class="fas fa-sort"></i></th>
                         <th onclick="sortTable('date')">Appointment <i class="fas fa-sort"></i></th>
                         <th onclick="sortTable('time')">Time Slot <i class="fas fa-sort"></i></th>
@@ -538,20 +439,13 @@
 
     <script>
         // =========================================================================
-        // Google Sheets API Configuration (Keys are securely hidden in Vercel)
-        // Make sure to set VACCI_SHEET_ID and GOOGLE_API_KEY in your .env/Vercel
-        // =========================================================================
-        const SHEET_RANGE = 'Sheet1!A2:H'; // Adjust based on your tab name
+        // Updated to span Columns A through K (11 columns total)
+        const SHEET_RANGE = 'Sheet1!A2:K'; 
         // =========================================================================
 
-        // Default dummy data
         const dummyAppointments = [
-            { name: "Arjun", patientId: "PD001234", age: "2 months", vaccine: "BCG", date: "2025-09-22", time: "09:30", status: "confirmed", contact: "+91-98765-43210", notes: "Birth dose" },
-            { name: "Aadhya", patientId: "PD001235", age: "6 weeks", vaccine: "OPV", date: "2025-09-22", time: "10:15", status: "pending", contact: "+91-98765-43211", notes: "First dose" },
-            { name: "Vihaan", patientId: "PD001236", age: "3 months", vaccine: "DPT", date: "2025-09-22", time: "11:00", status: "confirmed", contact: "+91-98765-43212", notes: "Second dose" },
-            { name: "Ananya", patientId: "PD001237", age: "4 months", vaccine: "Hib", date: "2025-09-23", time: "08:45", status: "confirmed", contact: "+91-98765-43213", notes: "Premature baby" },
-            { name: "Karthik", patientId: "PD001238", age: "2 months", vaccine: "Hepatitis B", date: "2025-09-23", time: "09:30", status: "pending", contact: "+91-98765-43214", notes: "Catch up" },
-            { name: "Ishaan", patientId: "PD001239", age: "6 months", vaccine: "Pneumococcal", date: "2025-09-23", time: "14:20", status: "completed", contact: "+91-98765-43215", notes: "Second dose" }
+            { name: "Arjun", patientId: "PD1000", age: "2 months", vaccine: "BCG", date: "2025-09-22", time: "09:30", status: "confirmed", contact: "+91-98765-43210", notes: "Birth dose", gmail: "parent1@gmail.com", dob: "2025-07-20", location: "Delhi" },
+            { name: "Aadhya", patientId: "PD1001", age: "6 weeks", vaccine: "OPV", date: "2025-09-22", time: "10:15", status: "pending", contact: "+91-98765-43211", notes: "First dose", gmail: "parent2@gmail.com", dob: "2025-08-10", location: "Mumbai" }
         ];
 
         let appointments = [];
@@ -560,7 +454,6 @@
 
         async function fetchUserData() {
             try {
-                // Fetch from our secure Vercel API Route instead of exposing keys to the browser
                 const url = `/api/getGoogleSheet?type=vacci&range=${encodeURIComponent(SHEET_RANGE)}`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('API Error');
@@ -569,16 +462,20 @@
                 if (result.error) throw new Error(result.error);
 
                 if (result.values && result.values.length > 0) {
+                    // NEW MAPPING: A through K
                     originalAppointments = result.values.map((row, index) => ({
-                        name: row[0] || 'Unknown',         // Column A
-                        patientId: `PD${1000 + index}`,    // Auto-generates an ID since it's missing from the sheet
-                        age: row[1] || '',                 // Column B
-                        vaccine: row[2] || '',             // Column C
-                        date: row[3] || '',                // Column D
-                        time: row[4] || '',                // Column E
-                        status: row[5] || 'pending',       // Column F
-                        contact: row[6] || '',             // Column G
-                        notes: row[7] || ''                // Column H
+                        name: row[0] || 'Unknown',         // Col A: CHILD DETAILS
+                        patientId: `PD${1000 + index}`,    // Auto-generated
+                        age: row[1] || '',                 // Col B: AGE
+                        vaccine: row[2] || '',             // Col C: Vaccine Type
+                        date: row[3] || '',                // Col D: Appointment
+                        time: row[4] || '',                // Col E: Time Slot
+                        status: row[5] || 'pending',       // Col F: Status
+                        contact: row[6] || '',             // Col G: Parent Contact
+                        notes: row[7] || '',               // Col H: Medical Notes
+                        gmail: row[8] || '',               // Col I: Gmail
+                        dob: row[9] || '',                 // Col J: DOB
+                        location: row[10] || ''            // Col K: Location
                     }));
                 } else {
                     originalAppointments = [];
@@ -604,10 +501,7 @@
                 const date = new Date(dateStr);
                 if(isNaN(date)) return dateStr;
                 return date.toLocaleDateString('en-IN', {
-                    weekday: 'short',
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric'
+                    weekday: 'short', day: '2-digit', month: 'short', year: 'numeric'
                 });
             } catch(e) { return dateStr; }
         }
@@ -620,9 +514,7 @@
                 const date = new Date();
                 date.setHours(parts[0], parts[1]);
                 return date.toLocaleTimeString('en-IN', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
+                    hour: '2-digit', minute: '2-digit', hour12: true
                 });
             } catch(e) { return timeStr; }
         }
@@ -647,9 +539,12 @@
                 row.innerHTML = `
                     <td>
                         <div class="patient-name">${appointment.name}</div>
-                        <div class="patient-id">ID: ${appointment.patientId}</div>
+                        <div class="patient-id">ID: ${appointment.patientId} ${appointment.location ? `| <i class="fas fa-map-marker-alt"></i> ${appointment.location}` : ''}</div>
                     </td>
-                    <td>${appointment.age}</td>
+                    <td>
+                        <div>${appointment.age || '-'}</div>
+                        ${appointment.dob ? `<div style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">DOB: ${appointment.dob}</div>` : ''}
+                    </td>
                     <td><span class="vaccine-badge ${getVaccineClass(appointment.vaccine)}">${appointment.vaccine}</span></td>
                     <td class="date-cell"><i class="far fa-calendar-alt"></i> ${formatDate(appointment.date)}</td>
                     <td class="time-cell"><i class="far fa-clock"></i> ${formatTime(appointment.time)}</td>
@@ -658,7 +553,10 @@
                             ${appointment.status.toUpperCase()}
                         </span>
                     </td>
-                    <td class="contact-info"><i class="fas fa-phone-alt"></i> ${appointment.contact}</td>
+                    <td class="contact-info">
+                        <div><i class="fas fa-phone-alt"></i> ${appointment.contact || '-'}</div>
+                        ${appointment.gmail ? `<div style="font-size: 0.8rem; color: #64748b; margin-top: 4px;"><i class="fas fa-envelope"></i> ${appointment.gmail}</div>` : ''}
+                    </td>
                     <td style="font-size: 0.85rem; color: #64748b;">${appointment.notes}</td>
                 `;
                 tbody.appendChild(row);
@@ -671,9 +569,8 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('totalAppointments').textContent = appointments.length;
             document.getElementById('todayAppointments').textContent = appointments.filter(apt => apt.date === today).length;
-            document.getElementById('confirmedCount').textContent = appointments.filter(apt => apt.status.toLowerCase() === 'confirmed').length;
+            document.getElementById('confirmedCount').textContent = appointments.filter(apt => apt.status.toLowerCase() === 'confirmed' || apt.status.toLowerCase() === 'done').length;
             document.getElementById('pendingCount').textContent = appointments.filter(apt => apt.status.toLowerCase() === 'pending').length;
-            document.getElementById('completedCount').textContent = appointments.filter(apt => apt.status.toLowerCase() === 'completed').length;
         }
 
         function sortTable(field) {
@@ -700,49 +597,21 @@
                         valueA = new Date(a.date);
                         valueB = new Date(b.date);
                         break;
-                    case 'time':
-                        valueA = new Date('2025-01-01T' + (a.time||'00:00'));
-                        valueB = new Date('2025-01-01T' + (b.time||'00:00'));
-                        break;
                     case 'name':
                         valueA = (a.name||'').toLowerCase();
                         valueB = (b.name||'').toLowerCase();
                         break;
-                    case 'age':
-                        const getMonths = (ageStr) => {
-                            if(!ageStr) return 0;
-                            const match = ageStr.match(/(\d+)\s*(month|week)/i);
-                            if (match) {
-                                const num = parseInt(match[1]);
-                                return match[2].toLowerCase().startsWith('week') ? num / 4.33 : num;
-                            }
-                            return 0;
-                        };
-                        valueA = getMonths(a.age);
-                        valueB = getMonths(b.age);
-                        break;
-                    case 'vaccine':
-                        valueA = (a.vaccine||'').toLowerCase();
-                        valueB = (b.vaccine||'').toLowerCase();
-                        break;
                     case 'status':
-                        const statusOrder = { 'confirmed': 1, 'pending': 2, 'completed': 3, 'cancelled': 4 };
+                        const statusOrder = { 'confirmed': 1, 'done': 1, 'pending': 2, 'completed': 3, 'cancelled': 4 };
                         valueA = statusOrder[(a.status||'').toLowerCase()] || 5;
                         valueB = statusOrder[(b.status||'').toLowerCase()] || 5;
                         break;
-                    case 'contact':
-                        valueA = (a.contact||'').toLowerCase();
-                        valueB = (b.contact||'').toLowerCase();
-                        break;
-                    default:
-                        return 0;
+                    default: return 0;
                 }
-
                 if (valueA < valueB) return currentSort.direction === 'asc' ? -1 : 1;
                 if (valueA > valueB) return currentSort.direction === 'asc' ? 1 : -1;
                 return 0;
             });
-
             renderAppointments();
         }
 
@@ -766,6 +635,8 @@
                     (app.vaccine||'').toLowerCase().includes(searchTerm) ||
                     (app.status||'').toLowerCase().includes(searchTerm) ||
                     (app.contact||'').includes(searchTerm) ||
+                    (app.gmail||'').toLowerCase().includes(searchTerm) ||
+                    (app.location||'').toLowerCase().includes(searchTerm) ||
                     (app.notes||'').toLowerCase().includes(searchTerm)
                 );
             }
@@ -773,7 +644,6 @@
         }
 
         document.getElementById('searchInput').addEventListener('input', searchAppointments);
-
         document.addEventListener('DOMContentLoaded', fetchUserData);
     </script>
 </body>
