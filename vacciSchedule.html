@@ -13,6 +13,8 @@
             --secondary: #059669;
             --dark: #0f172a;
             --light: #f8fafc;
+            --text-main: #334155;
+            --text-muted: #64748b;
             --glass-bg: rgba(255, 255, 255, 0.85);
             --glass-border: rgba(255, 255, 255, 0.4);
         }
@@ -29,7 +31,7 @@
             background-attachment: fixed;
             min-height: 100vh;
             padding: 20px;
-            color: #333;
+            color: var(--text-main);
         }
 
         .container {
@@ -116,12 +118,6 @@
             gap: 8px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-        
-        .btn-settings {
-            background: #fff;
-            color: #333;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .btn:hover {
@@ -243,6 +239,7 @@
         .table-container {
             overflow: hidden;
             margin-bottom: 40px;
+            overflow-x: auto;
         }
 
         .appointments-table {
@@ -250,12 +247,13 @@
             border-collapse: collapse;
             font-size: 0.95rem;
             background: rgba(255,255,255,0.6);
+            min-width: 1000px;
         }
 
         .appointments-table th {
             background: rgba(255,255,255,0.9);
             color: var(--secondary);
-            padding: 18px 24px;
+            padding: 20px 24px;
             text-align: left;
             font-weight: 700;
             font-size: 0.85rem;
@@ -269,32 +267,70 @@
         }
 
         .appointments-table td {
-            padding: 18px 24px;
+            padding: 20px 24px;
             border-bottom: 1px solid rgba(0,0,0,0.03);
             vertical-align: middle;
-            font-weight: 500;
         }
 
         .appointments-table tr:hover {
             background: rgba(255,255,255,0.9);
         }
 
+        /* Upgraded Cell Styles */
         .patient-name {
             font-weight: 700;
-            color: var(--secondary);
+            color: var(--dark);
             font-size: 1.05rem;
+            margin-bottom: 2px;
         }
 
         .patient-id {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        .location-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        .primary-text {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .secondary-text {
             font-size: 0.85rem;
-            color: #64748b;
-            margin-top: 4px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .contact-link {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .contact-link:hover {
+            color: var(--primary);
         }
 
         .vaccine-badge {
             display: inline-block;
             padding: 6px 14px;
-            border-radius: 20px;
+            border-radius: 8px;
             font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -310,20 +346,18 @@
         .rotavirus { background: #e0f2fe; color: #0284c7; }
         .ipv { background: #dcfce7; color: #16a34a; }
         .rabies { background: #fce7f3; color: #db2777; }
-
-        .date-cell, .time-cell {
-            color: #475569;
-        }
+        .default-vaccine { background: #f1f5f9; color: #475569; }
 
         .status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
             padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
             font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .confirmed, .done { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
@@ -331,14 +365,19 @@
         .cancelled { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
         .completed { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
 
-        .contact-info {
-            color: var(--secondary);
+        .notes-cell {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .no-data {
             text-align: center;
             padding: 80px 20px;
-            color: var(--secondary);
+            color: var(--text-muted);
         }
         
         .no-data i {
@@ -444,8 +483,8 @@
         // =========================================================================
 
         const dummyAppointments = [
-            { name: "Arjun", patientId: "PD1000", age: "2 months", vaccine: "BCG", date: "2025-09-22", time: "09:30", status: "confirmed", contact: "+91-98765-43210", notes: "Birth dose", gmail: "parent1@gmail.com", dob: "2025-07-20", location: "Delhi" },
-            { name: "Aadhya", patientId: "PD1001", age: "6 weeks", vaccine: "OPV", date: "2025-09-22", time: "10:15", status: "pending", contact: "+91-98765-43211", notes: "First dose", gmail: "parent2@gmail.com", dob: "2025-08-10", location: "Mumbai" }
+            { name: "Arjun", patientId: "PD1000", age: "2 months", vaccine: "BCG", date: "2025-09-22", time: "09:30", status: "confirmed", contact: "+91 98765 43210", notes: "Birth dose", gmail: "parent1@gmail.com", dob: "2025-07-20", location: "Delhi" },
+            { name: "Aadhya", patientId: "PD1001", age: "6 weeks", vaccine: "OPV", date: "2025-09-22", time: "10:15", status: "pending", contact: "+91 98765 43211", notes: "First dose", gmail: "parent2@gmail.com", dob: "2025-08-10", location: "Mumbai" }
         ];
 
         let appointments = [];
@@ -462,20 +501,19 @@
                 if (result.error) throw new Error(result.error);
 
                 if (result.values && result.values.length > 0) {
-                    // NEW MAPPING: A through K
                     originalAppointments = result.values.map((row, index) => ({
-                        name: row[0] || 'Unknown',         // Col A: CHILD DETAILS
-                        patientId: `PD${1000 + index}`,    // Auto-generated
-                        age: row[1] || '',                 // Col B: AGE
-                        vaccine: row[2] || '',             // Col C: Vaccine Type
-                        date: row[3] || '',                // Col D: Appointment
-                        time: row[4] || '',                // Col E: Time Slot
-                        status: row[5] || 'pending',       // Col F: Status
-                        contact: row[6] || '',             // Col G: Parent Contact
-                        notes: row[7] || '',               // Col H: Medical Notes
-                        gmail: row[8] || '',               // Col I: Gmail
-                        dob: row[9] || '',                 // Col J: DOB
-                        location: row[10] || ''            // Col K: Location
+                        name: row[0] || 'Unknown',         
+                        patientId: `PD${1000 + index}`,    
+                        age: row[1] || '',                 
+                        vaccine: row[2] || '',             
+                        date: row[3] || '',                
+                        time: row[4] || '',                
+                        status: row[5] || 'pending',       
+                        contact: row[6] || '',             
+                        notes: row[7] || '',               
+                        gmail: row[8] || '',               
+                        dob: row[9] || '',                 
+                        location: row[10] || ''            
                     }));
                 } else {
                     originalAppointments = [];
@@ -495,11 +533,12 @@
             fetchUserData();
         }
 
+        // Improved date formatter that fails gracefully if user enters messy dates like "3"
         function formatDate(dateStr) {
             if(!dateStr) return '';
             try {
                 const date = new Date(dateStr);
-                if(isNaN(date)) return dateStr;
+                if(isNaN(date) || dateStr.length < 5) return dateStr; 
                 return date.toLocaleDateString('en-IN', {
                     weekday: 'short', day: '2-digit', month: 'short', year: 'numeric'
                 });
@@ -520,8 +559,10 @@
         }
 
         function getVaccineClass(vaccine) {
-            if(!vaccine) return '';
-            return vaccine.toLowerCase().replace(/[^a-z]/g, '-');
+            if(!vaccine) return 'default-vaccine';
+            const normalized = vaccine.toLowerCase().replace(/[^a-z]/g, '-');
+            const validClasses = ['bcg', 'opv', 'dpt', 'hib', 'hepatitis-b', 'pneumococcal', 'rotavirus', 'ipv', 'rabies'];
+            return validClasses.includes(normalized) ? normalized : 'default-vaccine';
         }
 
         function renderAppointments() {
@@ -539,25 +580,30 @@
                 row.innerHTML = `
                     <td>
                         <div class="patient-name">${appointment.name}</div>
-                        <div class="patient-id">ID: ${appointment.patientId} ${appointment.location ? `| <i class="fas fa-map-marker-alt"></i> ${appointment.location}` : ''}</div>
+                        <div class="patient-id">ID: ${appointment.patientId}</div>
+                        ${appointment.location ? `<div class="location-badge"><i class="fas fa-map-marker-alt" style="color:var(--primary);"></i> ${appointment.location}</div>` : ''}
                     </td>
                     <td>
-                        <div>${appointment.age || '-'}</div>
-                        ${appointment.dob ? `<div style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">DOB: ${appointment.dob}</div>` : ''}
+                        <div class="primary-text">${appointment.age || '-'}</div>
+                        ${appointment.dob ? `<div class="secondary-text"><i class="fas fa-birthday-cake"></i> ${appointment.dob}</div>` : ''}
                     </td>
-                    <td><span class="vaccine-badge ${getVaccineClass(appointment.vaccine)}">${appointment.vaccine}</span></td>
-                    <td class="date-cell"><i class="far fa-calendar-alt"></i> ${formatDate(appointment.date)}</td>
-                    <td class="time-cell"><i class="far fa-clock"></i> ${formatTime(appointment.time)}</td>
+                    <td><span class="vaccine-badge ${getVaccineClass(appointment.vaccine)}">${appointment.vaccine || '-'}</span></td>
+                    <td>
+                        <div class="primary-text"><i class="far fa-calendar-check" style="color: var(--primary); margin-right: 6px;"></i>${formatDate(appointment.date)}</div>
+                    </td>
+                    <td>
+                        <div class="primary-text"><i class="far fa-clock" style="color: #f59e0b; margin-right: 6px;"></i>${formatTime(appointment.time)}</div>
+                    </td>
                     <td>
                         <span class="status-badge ${appointment.status.toLowerCase()}">
                             ${appointment.status.toUpperCase()}
                         </span>
                     </td>
-                    <td class="contact-info">
-                        <div><i class="fas fa-phone-alt"></i> ${appointment.contact || '-'}</div>
-                        ${appointment.gmail ? `<div style="font-size: 0.8rem; color: #64748b; margin-top: 4px;"><i class="fas fa-envelope"></i> ${appointment.gmail}</div>` : ''}
+                    <td>
+                        <div class="primary-text"><a href="tel:${appointment.contact}" class="contact-link"><i class="fas fa-phone-alt" style="color: #94a3b8; margin-right: 6px;"></i>${appointment.contact || '-'}</a></div>
+                        ${appointment.gmail ? `<div class="secondary-text"><a href="mailto:${appointment.gmail}" class="contact-link"><i class="fas fa-envelope"></i> ${appointment.gmail}</a></div>` : ''}
                     </td>
-                    <td style="font-size: 0.85rem; color: #64748b;">${appointment.notes}</td>
+                    <td class="notes-cell" title="${appointment.notes}">${appointment.notes || '-'}</td>
                 `;
                 tbody.appendChild(row);
             });
