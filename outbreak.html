@@ -812,13 +812,13 @@
             const container = document.getElementById('alertsList');
             
             if (alerts.length === 0) {
-                container.innerHTML = \`
+                container.innerHTML = `
                     <div class="no-alerts">
                         <i class="fas fa-shield-alt"></i>
                         <h3>No Active Alerts</h3>
                         <p>No disease outbreaks detected matching your criteria.</p>
                     </div>
-                \`;
+                `;
                 return;
             }
             container.innerHTML = alerts.map(alert => {
