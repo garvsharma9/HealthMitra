@@ -599,6 +599,15 @@
             </div>
         </div>
 
+        <!-- Outbreak Warnings Banner Section -->
+        <div id="warningsBannerSection" class="alerts-section glass-panel" style="display: none; background: rgba(239, 68, 68, 0.05); border-left: 6px solid #dc2626; padding: 20px; margin-bottom: 30px;">
+            <h2 class="section-title" style="color: #dc2626; font-size: 1.5rem; margin-bottom: 15px;">
+                <i class="fas fa-exclamation-triangle"></i> 
+                Critical Outbreak Warnings
+            </h2>
+            <div id="warningsList"></div>
+        </div>
+
         <!-- Chart Section -->
         <div id="chartSection" class="chart-container glass-panel" style="display: none;">
             <canvas id="diseaseChart"></canvas>
@@ -627,8 +636,60 @@
         const SHEET_RANGE = 'Outbreak_Alerts!A2:E'; // Adjust based on your tab name
         // =========================================================================
 
+        // =========================================================================
+        // OUTBREAK WARNING THRESHOLD
+        // Change this number to set when a critical outbreak warning is displayed.
+        // For real-case scenarios, set this based on the disease (e.g., 50 for Dengue, 1 for Polio).
+        // =========================================================================
+        const OUTBREAK_THRESHOLD = 2;
+
         let currentChart = null;
         let allAlerts = [];
+
+        // Aggregation function to group cases by location and disease
+        function aggregateAlerts(alerts) {
+            const map = new Map();
+            alerts.forEach(alert => {
+                const key = `${alert.location.toLowerCase()}-${alert.disease.toLowerCase()}`;
+                if (map.has(key)) {
+                    const existing = map.get(key);
+                    existing.count += alert.count;
+                    if (alert.date > existing.date) existing.date = alert.date;
+                    if (alert.notes && !existing.notes.includes(alert.notes)) {
+                        existing.notes += (existing.notes ? '; ' : '') + alert.notes;
+                    }
+                } else {
+                    map.set(key, { ...alert });
+                }
+            });
+            return Array.from(map.values());
+        }
+
+        function displayWarnings(alerts) {
+            const warningsBanner = document.getElementById('warningsBannerSection');
+            const warningsList = document.getElementById('warningsList');
+            
+            // Only show alerts that meet or exceed the threshold
+            const outbreakAlerts = alerts.filter(a => a.count >= OUTBREAK_THRESHOLD);
+
+            if (outbreakAlerts.length > 0) {
+                warningsBanner.style.display = 'block';
+                warningsList.innerHTML = outbreakAlerts.map(alert => `
+                    <div style="background: rgba(255,255,255,0.7); border: 1px solid rgba(220,38,38,0.3); border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <h3 style="color: #dc2626; font-family: 'Outfit', sans-serif; display: flex; align-items: center; gap: 10px; font-size: 1.3rem; margin-bottom: 8px;">
+                            <i class="fas fa-exclamation-circle"></i> 
+                            OUTBREAK ALERT: ${alert.disease} in ${alert.location}
+                        </h3>
+                        <p style="font-weight: 600; color: #333; margin-top: 5px;">
+                            ${alert.count} cases have been reported in this location. Immediate attention may be required.
+                        </p>
+                    </div>
+                `).join('');
+            } else {
+                warningsBanner.style.display = 'none';
+                warningsList.innerHTML = '';
+            }
+        }
 
         // Default Dummy Data
         const dummyData = [
@@ -649,20 +710,21 @@
                 if (result.error) throw new Error(result.error);
 
                 if (result.values && result.values.length > 0) {
-                    allAlerts = result.values.map(row => ({
+                    const rawAlerts = result.values.map(row => ({
                         location: row[0] || 'Unknown',
                         disease: row[1] || 'Unknown',
                         count: parseInt(row[2]) || 0,
                         date: row[3] || '',
                         notes: row[4] || ''
                     }));
+                    allAlerts = aggregateAlerts(rawAlerts);
                 } else {
                     allAlerts = [];
                 }
                 displayResults(allAlerts, "Global");
             } catch (err) {
                 console.warn('Live data unavailable, loading demo data:', err.message);
-                allAlerts = [...dummyData];
+                allAlerts = aggregateAlerts([...dummyData]);
                 displayResults(allAlerts, "Global");
             }
         }
@@ -701,6 +763,7 @@
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('alertsSection').style.display = 'none';
             document.getElementById('chartSection').style.display = 'none';
+            document.getElementById('warningsBannerSection').style.display = 'none';
         }
 
         function displayResults(alerts, locationLabel) {
@@ -720,6 +783,9 @@
 
             // Display alerts
             displayAlertsList(alerts);
+            
+            // Display Outbreak Warnings
+            displayWarnings(alerts);
             
             // Create chart
             createChart(alerts);
