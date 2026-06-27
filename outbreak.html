@@ -700,34 +700,35 @@
         ];
 
         async function fetchUserData() {
-            try {
-                // Fetch from our secure Vercel API Route instead of exposing keys to the browser
-                const url = `/api/getGoogleSheet?type=outbreak&range=${encodeURIComponent(SHEET_RANGE)}`;
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('API Error');
-                const result = await response.json();
-                
-                if (result.error) throw new Error(result.error);
+    try {
+        const url = `/api/getGoogleSheet?type=outbreak&range=${encodeURIComponent(SHEET_RANGE)}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('API Error');
+        const result = await response.json();
+        
+        if (result.error) throw new Error(result.error);
 
-                if (result.values && result.values.length > 0) {
-                    const rawAlerts = result.values.map(row => ({
-                        location: row[0] || 'Unknown',
-                        disease: row[1] || 'Unknown',
-                        count: parseInt(row[2]) || 0,
-                        date: row[3] || '',
-                        notes: row[4] || ''
-                    }));
-                    allAlerts = aggregateAlerts(rawAlerts);
-                } else {
-                    allAlerts = [];
-                }
-                displayResults(allAlerts, "Global");
-            } catch (err) {
-                console.warn('Live data unavailable, loading demo data:', err.message);
-                allAlerts = aggregateAlerts([...dummyData]);
-                displayResults(allAlerts, "Global");
-            }
+        if (result.values && result.values.length > 0) {
+            // Map the rows to your ACTUAL sheet columns (A through E)
+            const rawAlerts = result.values.map(row => ({
+                date: row[0] || '',
+                location: row[1] || 'Unknown',
+                notes: row[2] || '',             // This is now "Reported Symptoms"
+                disease: row[3] || 'Unknown',    // Column D: AI_Guessed_Disease
+                severity: row[4] || 'Low',       // Column E: Severity
+                count: 1                         // Every row is 1 case
+            }));
+            allAlerts = aggregateAlerts(rawAlerts);
+        } else {
+            allAlerts = [];
         }
+        displayResults(allAlerts, "Global");
+    } catch (err) {
+        console.warn('Live data unavailable, loading demo data:', err.message);
+        allAlerts = aggregateAlerts([...dummyData]);
+        displayResults(allAlerts, "Global");
+    }
+}
 
         function refreshData() {
             document.getElementById('locationInput').value = '';
