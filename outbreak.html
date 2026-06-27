@@ -677,13 +677,13 @@
                 warningsList.innerHTML = outbreakAlerts.map(alert => `
                     <div style="background: rgba(255,255,255,0.7); border: 1px solid rgba(220,38,38,0.3); border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                         <h3 style="color: #dc2626; font-family: 'Outfit', sans-serif; display: flex; align-items: center; gap: 10px; font-size: 1.3rem; margin-bottom: 8px;">
-                            <i class="fas fa-exclamation-circle"></i> 
+                            <i class="fas fa-exclamation-circle"><\/i> 
                             OUTBREAK ALERT: ${alert.disease} in ${alert.location}
-                        </h3>
+                        <\/h3>
                         <p style="font-weight: 600; color: #333; margin-top: 5px;">
                             ${alert.count} cases have been reported in this location. Immediate attention may be required.
-                        </p>
-                    </div>
+                        <\/p>
+                    <\/div>
                 `).join('');
             } else {
                 warningsBanner.style.display = 'none';
@@ -759,7 +759,7 @@
 
         function showLoading() {
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('loading').innerHTML = '<p>Fetching outbreak data...</p>';
+            document.getElementById('loading').innerHTML = '<p>Fetching outbreak data...<\/p>';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('alertsSection').style.display = 'none';
             document.getElementById('chartSection').style.display = 'none';
@@ -814,10 +814,10 @@
             if (alerts.length === 0) {
                 container.innerHTML = `
                     <div class="no-alerts">
-                        <i class="fas fa-shield-alt"></i>
-                        <h3>No Active Alerts</h3>
-                        <p>No disease outbreaks detected matching your criteria.</p>
-                    </div>
+                        <i class="fas fa-shield-alt"><\/i>
+                        <h3>No Active Alerts<\/h3>
+                        <p>No disease outbreaks detected matching your criteria.<\/p>
+                    <\/div>
                 `;
                 return;
             }
@@ -828,29 +828,29 @@
                     <div class="alert-card ${severity.toLowerCase()}">
                         <div class="alert-header">
                             <h3 class="disease-name">
-                                <i class="fas fa-virus"></i> ${alert.disease}
-                            </h3>
-                            <span class="severity-badge ${severity.toLowerCase()}">${severity}</span>
-                        </div>
+                                <i class="fas fa-virus"><\/i> ${alert.disease}
+                            <\/h3>
+                            <span class="severity-badge ${severity.toLowerCase()}">${severity}<\/span>
+                        <\/div>
                         <div class="alert-details">
                             <div class="detail-item">
-                                <div class="detail-value">${alert.count}</div>
-                                <div class="detail-label">Cases</div>
-                            </div>
+                                <div class="detail-value">${alert.count}<\/div>
+                                <div class="detail-label">Cases<\/div>
+                            <\/div>
                             <div class="detail-item">
-                                <div class="detail-value" style="font-size:1rem;">${alert.location}</div>
-                                <div class="detail-label">Location</div>
-                            </div>
+                                <div class="detail-value" style="font-size:1rem;">${alert.location}<\/div>
+                                <div class="detail-label">Location<\/div>
+                            <\/div>
                             <div class="detail-item">
-                                <div class="detail-value" style="font-size:1rem;">${alert.date || 'N/A'}</div>
-                                <div class="detail-label">Date</div>
-                            </div>
+                                <div class="detail-value" style="font-size:1rem;">${alert.date || 'N/A'}<\/div>
+                                <div class="detail-label">Date<\/div>
+                            <\/div>
                             <div class="detail-item">
-                                <div class="detail-value" style="font-size:1rem;">${alert.notes || '-'}</div>
-                                <div class="detail-label">Notes</div>
-                            </div>
-                        </div>
-                    </div>
+                                <div class="detail-value" style="font-size:1rem;">${alert.notes || '-'}<\/div>
+                                <div class="detail-label">Notes<\/div>
+                            <\/div>
+                        <\/div>
+                    <\/div>
                 `;
             }).join('');
         }
